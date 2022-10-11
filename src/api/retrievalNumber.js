@@ -47,3 +47,27 @@ export function GetGroupMembers(query) {
     params: query
   })
 }
+/**
+ *
+ * @param {*} query
+ * @returns
+ */
+export function GetGroupPageList(query) {
+  return request({
+    url: '/api/Contact/GetGroupPageList',
+    method: 'get',
+    params: query
+  })
+}
+/**
+ *
+ * @param {*} query
+ * @returns
+ */
+export function GetGroupMemberPageList(query) {
+  return request({
+    url: '/api/Contact/GetGroupMemberPageList',
+    method: 'get',
+    params: query
+  })
+}

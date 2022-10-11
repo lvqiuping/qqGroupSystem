@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div style="display: flex;flex-direction: row;justify-content: space-between; margin-bottom: 20px;height: 40px;">
-      <div style="display: flex;flex-direction: row;justify-content: space-between;">
+    <div style="display: flex;flex-direction: row;justify-content: space-between; ">
+      <div v-if="leftButtonGroup" style="display: flex;flex-direction: row;justify-content: space-between;">
         <search-form
           :search-form="searchForm"
           @searchFormEmit="searchFormEmit"
@@ -11,7 +11,7 @@
           @operateEmit="operateEmit"
         />
       </div>
-      <div style="display: flex;flex-direction: row;justify-content: space-between;">
+      <div v-if="rightButtonGroup" style="display: flex;flex-direction: row;justify-content: space-between; height: 40px; margin-bottom: 20px;">
         <el-button type="" icon="el-icon-refresh" style="margin-right: 10px; margin-left: 10px;" @click="refresh" />
         <el-popover
           placement="bottom"
@@ -31,6 +31,8 @@
       v-loading="loading"
       :data="tableData"
       :height="height"
+      :row-class-name="rowClassName"
+      :header-cell-style="{background: '#f5f7fa'}"
       style="width: 100%"
       border
       @selection-change="handleSelectionChange"
@@ -53,7 +55,7 @@
             <slot :name="item.slot" :row="scope.row" :column="item.prop" :index="scope.$index" />
           </div>
           <div v-else-if="item.type == 'router'">
-            <router-link :to="{path: item.path, query: {companyName: scope.row[item.value]} }" style="color: #409EFF">{{ scope.row[item.value] }}</router-link>
+            <router-link :to="{path: item.path, query: { onlyHasPhone: item.onlyHasPhone, groupQQ: scope.row.groupQq } }" style="color: #409EFF">{{ scope.row[item.value] }}</router-link>
           </div>
           <div v-else-if="item.type == 'options'">
             <el-button
@@ -90,7 +92,9 @@ export default {
     // 特别操作
     searchForm: { type: Object, default: null },
     isShowGroup: { type: Boolean, default: true },
-    buttonGroup: { type: Object, default: null }
+    buttonGroup: { type: Object, default: null },
+    leftButtonGroup: { type: Boolean, default: true },
+    rightButtonGroup: { type: Boolean, default: true }
 
   },
   data() {
@@ -105,6 +109,9 @@ export default {
     }
   },
   methods: {
+    rowClassName({ row, rowIndex }) {
+      row.xh = rowIndex + 1
+    },
     sortChange({ column, prop, order }) {
       if (order === 'ascending') {
         this.temp.orderBy = prop

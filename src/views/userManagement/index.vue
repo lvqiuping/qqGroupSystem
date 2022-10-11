@@ -30,7 +30,6 @@
     <el-dialog :title="'修改密码'" :visible.sync="dialogPasswordVisible" top="3%">
       <div class="el-dialog-div">
         <password-form
-          :loading="loading"
           :passwordtemp="passwordtemp"
           @createPassword="createPassword"
           @dialogPasswordVisibleEmit="dialogPasswordVisibleEmit"

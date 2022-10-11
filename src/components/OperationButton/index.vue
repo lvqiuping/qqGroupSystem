@@ -5,7 +5,7 @@
         <div v-for="(item, index) in buttonGroup.fields" :key="index">
           <el-button
             size=""
-            type="primary"
+            :type="buttonGroup.type ? buttonGroup.type: 'primary'"
             :icon="item.icon"
             @click="operate()"
           >{{ item.text }}</el-button>

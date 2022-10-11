@@ -1,54 +1,34 @@
 <template>
   <div class="login-container" :style="{backgroundImage: `url(${bgImage})`}" style="display: flex; justify-content: center; align-items: center; ">
-
-    <div
-      style="width: 984px; height: 583px; background-size: 100%; background-repeat: no-repeat; background-position: center; position: relative;"
-      :style="{backgroundImage: `url(${bgImage4})`}"
-    >
-      <el-image
-        style="width: 70%; height: auto; position: absolute; left: -150px; top: -40px"
-        :src="bgImage3"
-        fit="contain"
-      />
-      <div style="width: 50%; float: right;margin: auto;">
+    <div class="main-body">
+      <div class="login-main">
+        <div class="login-top">
+          <span>群成员后台系统</span>
+        </div>
         <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
-          <div style="margin-bottom: 30px; color: #8C8CF4; border-bottom: 2px solid #8C8CF4; width: 32%;">账号密码登录</div>
           <el-form-item prop="userName">
-            <span class="svg-container">
-              <el-image
-                style="width: 20px; height: 20px"
-                :src="userImage"
-                fit="contain"
-              />
-            </span>
             <el-input
               ref="userName"
               v-model="loginForm.userName"
-              placeholder="用户名"
+              placeholder="请输入用户名"
               name="userName"
               type="text"
               tabindex="1"
               auto-complete="on"
+              prefix-icon="el-icon-user"
             />
           </el-form-item>
-
           <el-form-item prop="password">
-            <span class="svg-container">
-              <el-image
-                style="width: 20px; height: 20px"
-                :src="passwordImage"
-                fit="contain"
-              />
-            </span>
             <el-input
               :key="passwordType"
               ref="password"
               v-model="loginForm.password"
               :type="passwordType"
-              placeholder="密码"
+              placeholder="请输入密码"
               name="password"
               tabindex="2"
               auto-complete="on"
+              prefix-icon="el-icon-lock"
               @keyup.enter.native="handleLogin"
             />
             <span class="show-pwd" @click="showPwd">
@@ -58,18 +38,19 @@
           <div style="margin-bottom: 1rem;">
             <Vcode :show="isShow" @success="onSuccess" @close="onClose" @fail="onFail" />
             <div
-              style="color: #8C8CF4; cursor: pointer;"
+              style="color: #409EFF; cursor: pointer;margin: 20px 0 50px 0;"
               @click="startCaptcha"
             >点击验证</div>
           </div>
-          <el-button
-            :loading="loading"
-            type=""
-            style="width:100%;margin-bottom:30px;color: #fff"
-            :style="{backgroundImage: `url(${butImage})`}"
-            class="bg"
-            @click.native.prevent="handleLogin"
-          >登 录</el-button>
+          <div>
+            <el-button
+              :loading="loading"
+              type="primary"
+              size="medium"
+              style="width: 100%"
+              @click.native.prevent="handleLogin"
+            >登 录</el-button>
+          </div>
         </el-form>
       </div>
     </div>
@@ -88,13 +69,7 @@ export default {
   },
   data() {
     return {
-      bgImage: require('@/assets/login/1.png'),
-      bgImage2: require('@/assets/login/2.png'),
-      bgImage3: require('@/assets/login/3.png'),
-      bgImage4: require('@/assets/login/4.png'),
-      userImage: require('@/assets/login/u.png'),
-      passwordImage: require('@/assets/login/p.png'),
-      butImage: require('@/assets/login/b.png'),
+      bgImage: require('@/assets/login/loginbg.png'),
       loginForm: {
         userName: '',
         password: ''
@@ -181,9 +156,9 @@ export default {
 /* 修复input 背景不协调 和光标变色 */
 /* Detail see https://github.com/PanJiaChen/vue-element-admin/pull/927 */
 
-$bg: 	rgba(140, 140, 244, .1);
-$light_gray:#fff;
-$cursor: rgb(140, 140, 244);
+$bg: #fff;
+$light_gray: #333;
+$cursor: #333;
 
 @supports (-webkit-mask: none) and (not (cater-color: $cursor)) {
   .login-container .el-input input {
@@ -211,14 +186,14 @@ $cursor: rgb(140, 140, 244);
   .el-input {
     display: inline-block;
     height: 47px;
-    width: 85%;
+    border-bottom: 1px solid #eee;
 
     input {
       background: transparent;
       border: 0px;
+      border-bottom: 1px solid #eee;
       -webkit-appearance: none;
       border-radius: 0px;
-      padding: 12px 5px 12px 15px;
       color: $light_gray;
       height: 47px;
       caret-color: $cursor;
@@ -253,16 +228,31 @@ $light_gray:#eee;
 .login-container {
   min-height: 100%;
   width: 100%;
-  // background-color: $bg;
   overflow: hidden;
-
-  .login-form {
+.login-main {
+  width: 428px;
     position: relative;
-    width: 388px;
-    max-width: 100%;
-    padding: 160px 35px 0;
-    margin: 0 auto;
+    float: left;
+}
+.login-top {
+  height: 117px;
+    background-color: #148be4;
+    border-radius: 12px 12px 0 0;
+    font-family: SourceHanSansCN-Regular;
+    font-size: 30px;
+    font-weight: 400;
+    font-stretch: normal;
+    letter-spacing: 0;
+    color: #fff;
+    line-height: 117px;
+    text-align: center;
     overflow: hidden;
+}
+  .login-form {
+    width: 428px;
+    background: #fff;
+    border-radius: 0 0 12px 12px;
+    padding: 53px;
   }
 
   .tips {
@@ -305,7 +295,7 @@ $light_gray:#eee;
     color: $dark_gray;
     cursor: pointer;
     user-select: none;
-    color: #fff
+    color: #333
   }
 }
 </style>

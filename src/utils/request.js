@@ -2,7 +2,7 @@ import axios from 'axios'
 import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
 import { getToken, getRefreshToken, setToken, setRefreshToken } from '@/utils/auth'
-
+import Cookies from 'js-cookie'
 // create an axios instance
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
@@ -80,13 +80,15 @@ service.interceptors.response.use(
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          store.dispatch('user/logout').then(() => {
+          if (Cookies.get('userId') === undefined) {
             location.reload()
-          })
+          } else {
+            store.dispatch('user/logout').then(() => {
+              location.reload()
+            })
+          }
         })
       }
-      // 如果是403，不能禁用用户之类的操作
-
       return Promise.reject(new Error(res.errors || 'Error'))
     } else {
       return res

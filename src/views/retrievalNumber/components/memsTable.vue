@@ -1,58 +1,52 @@
 <template>
-  <div class="app-container">
-    <basic-table
-      :table-title="tableTitle"
-      :table-data="tableData"
-      :loading="loading"
-      :height="400"
-      :search-form="searchForm"
-      @refresh="getPageList()"
-      @searchFormEmit2="searchFormEmit2"
-    />
-<!-- :search-form="searchForm"  -->
-    <pagination v-show="total>0" :total="total" :page.sync="listQuery.pageIndex" :limit.sync="listQuery.pageSize" @pagination="getPageList()" />
+  <div>
+    <div style="display:flex;justify-content: start; font-size: 18px; padding: 0 0 10px 0;">
+      <div>{{ qqGroupsItems.gn }}({{ qqGroupsItems.gc }})</div>
+      <div style="color: #409EFF; cursor: pointer; padding-left: 20px; padding-right: 20px; font-size: 14px;" @click="prev">[切换QQ群]</div>
+    </div>
+    <div>
+      <basic-table
+        :table-title="tableTitle"
+        :table-data="tableData"
+        :loading="loading"
+        :height="550"
+        :right-button-group="false"
+        :left-button-group="false"
+        :multiple-table="false"
+      />
+    </div>
+    <div style="margin-top: 10px">群人数： {{ total }} 人</div>
   </div>
 </template>
 <script>
-import Pagination from '@/components/BasicTable/Pagination.vue'
 import BasicTable from '@/components/BasicTable/index.vue'
-import { GetGroupMembers } from '@/api/retrievalNumber'
-
 export default {
   name: 'MemsTable',
-  components: { BasicTable, Pagination },
+  components: { BasicTable },
   props: {
-    // eslint-disable-next-line vue/prop-name-casing
-    MembersList: { type: Array, default: Array },
-    listQuery: { type: Object, default: Object }
+    tableData: { type: Array, default: Array },
+    total: { type: Number, default: 0 },
+    qqGroupsItems: { type: Object, default: Object }
   },
   data() {
     return {
       loading: false,
-      searchForm: {
-        show: true,
-        expend: true,
-        title: '表格筛选',
-        size: 'default',
-        fields: [
-          {
-            type: 'input',
-            label: '搜索qq群',
-            labelShow: false,
-            name: 'qq'
-          }
-        ]
-      },
       tableTitle: [
         {
+          label: '序号',
+          value: 'xh',
+          show: true,
+          type: 'text'
+        },
+        {
           label: '成员',
-          value: 'groupEntry',
+          value: 'nick',
           show: true,
           type: 'text'
         },
         {
           label: '群昵称',
-          value: 'nick',
+          value: 'groupEntry',
           show: true,
           type: 'text'
         },
@@ -86,37 +80,12 @@ export default {
           show: true,
           type: 'text'
         }
-      ],
-      total: 0,
-      tableData: []
+      ]
     }
   },
-  created() {
-    this.getMems()
-  },
   methods: {
-    getMems() {
-      console.log('参数', this.listQuery)
-      GetGroupMembers(this.listQuery).then((res) => {
-        console.log('成员', JSON.parse(res.data))
-        var d = JSON.parse(res.data)
-        if (d.code === 200) {
-          this.loading = false
-          this.tableData = d.data.mems
-          this.total = d.data.count
-        }
-      })
-    },
-    // 获取表格数据分页
-    getPageList() {
-      this.loading = true
-      this.getMems()
-    },
-    // sousuo
-    searchFormEmit2() {
-      // this.listQuery.pageIndex = 1
-      // this.listQuery = Object.assign({}, this.listQuery, this.temp)
-      // this.getPageList()
+    prev() {
+      this.$emit('prev', 2)
     }
 
   }

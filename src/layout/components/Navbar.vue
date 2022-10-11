@@ -17,9 +17,21 @@
           <el-dropdown-item divided @click.native="logout">
             <span style="display:block;">注销</span>
           </el-dropdown-item>
+          <el-dropdown-item divided @click.native="changePassword">
+            <span style="display:block;">修改密码</span>
+          </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </div>
+    <el-dialog :title="'修改密码'" :visible.sync="dialogPasswordVisible" top="3%">
+      <div class="el-dialog-div">
+        <password-form
+          :passwordtemp="passwordtemp"
+          @createPassword="createPassword"
+          @dialogPasswordVisibleEmit="dialogPasswordVisibleEmit"
+        />
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -27,22 +39,32 @@
 import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
+import PasswordForm from '@/views/userManagement/components/passwordForm.vue'
+import { UpdatePassword } from '@/api/userManagement'
+import { TipsBox } from '@/utils/feedback.js'
 
 export default {
   components: {
     Breadcrumb,
-    Hamburger
+    Hamburger,
+    PasswordForm
   },
   data() {
     return {
-      top: true
+      top: true,
+      dialogPasswordVisible: false,
+      passwordtemp: {
+        newPassword: '',
+        userId: ''
+      }
+
     }
   },
   computed: {
     ...mapGetters([
       'sidebar',
-      'avatar',
-      'userName'
+      'userName',
+      'userId'
     ])
   },
   watch: {
@@ -62,6 +84,33 @@ export default {
     }
   },
   methods: {
+    changePassword() {
+      this.resetTemp()
+      console.log('userId', this.userId)
+      this.passwordtemp.userId = this.userId
+      this.dialogPasswordVisible = true
+    },
+    resetTemp() {
+      this.passwordtemp = {
+        newPassword: '',
+        userId: ''
+      }
+    },
+    createPassword(v) {
+      console.log(v)
+      UpdatePassword(v).then((res) => {
+        this.loading = true
+        if (res.statusCode === 200) {
+          this.loading = false
+          TipsBox('success', res.data)
+          this.dialogPasswordVisible = false
+          this.getPageList()
+        }
+      })
+    },
+    dialogPasswordVisibleEmit(v) {
+      this.dialogPasswordVisible = v
+    },
     toggleSideBar() {
       this.$store.dispatch('app/toggleSideBar')
     },

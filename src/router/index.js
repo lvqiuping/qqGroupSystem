@@ -62,7 +62,7 @@ export const constantRoutes = [
     name: '群成员管理', // 设定路由的名字，一定要填写不然使用<keep-alive>时会出现各种问题
     meta: {
       title: '群成员管理', // 设置该路由在侧边栏和面包屑中展示的名字
-      icon: 'el-icon-s-help'
+      icon: 'el-icon-s-custom'
     },
     hidden: false,
     children: [
@@ -70,21 +70,14 @@ export const constantRoutes = [
         path: 'retrievalNumber',
         name: 'RetrievalNumber',
         component: () => import('@/views/retrievalNumber/index'),
-        meta: { title: '群成员管理', icon: 'dashboard' },
+        meta: { title: '群成员管理', icon: 'el-icon-s-custom' },
         hidden: false
       },
       {
         path: 'peopleNumber',
         name: 'peopleNumber',
         component: () => import('@/views/retrievalNumber/sub/peopleNumber/index'),
-        meta: { title: '人数', icon: 'dashboard' },
-        hidden: true
-      },
-      {
-        path: 'phoneNumber',
-        name: 'phoneNumber',
-        component: () => import('@/views/retrievalNumber/sub/phoneNumber/index'),
-        meta: { title: '手机号', icon: 'dashboard' },
+        meta: { title: '群成员', icon: 'el-icon-s-custom' },
         hidden: true
       }
     ]

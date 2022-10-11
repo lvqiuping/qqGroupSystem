@@ -21,6 +21,9 @@ const store = new Vuex.Store({
     userName(state) {
       return state.user.userName
     },
+    userId(state) {
+      return state.user.userId
+    },
     permission: state => state.user.permission
   }
 })

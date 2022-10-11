@@ -1,6 +1,6 @@
 <template>
-  <div class="">
-    开发中
+  <div style="text-align: center; margin-top: 20%">
+    <i class="el-icon-loading">开发中</i>
   </div>
 </template>
 

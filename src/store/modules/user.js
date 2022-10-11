@@ -50,10 +50,10 @@ const actions = {
         str.map((e) => {
           obj[e.split('=')[0]] = e.split('=')[1]
         })
-        commit('SET_USER_NAME', obj.userName)
         Cookies.set('permission', obj.userName)
         Cookies.set('userId', response.data.userId)
         Cookies.set('isAdmin', response.data.isAdmin)
+        commit('SET_USER_NAME', obj.userName)
         commit('SET_IS_ADMIN', response.data.isAdmin)
         commit('SET_USER_ID', response.data.userId)
         // token 如果token失效会返回新的refreshToken
@@ -74,7 +74,7 @@ const actions = {
   // user logout
   logout({ commit, state }) {
     return new Promise((resolve, reject) => {
-      const params = `userId=${state.userId}`
+      const params = `userId=${Cookies.get('userId')}`
       logout(params).then(() => {
         removeToken() // must remove  token  first
         removeRefreshToken()

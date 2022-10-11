@@ -7,6 +7,7 @@ import { getToken, getRefreshToken } from '@/utils/auth' // get token from cooki
 import getPageTitle from '@/utils/get-page-title'
 /* Layout */
 import Layout from '@/layout'
+import Cookies from 'js-cookie'
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
 const whiteList = ['/login'] // no redirect whitelist
@@ -30,7 +31,7 @@ router.beforeEach(async(to, from, next) => {
     } else {
       const hasGetUserInfo = store.getters.userName
       if (hasGetUserInfo) {
-        if (store.state.user.isAdmin) {
+        if (Cookies.get('isAdmin') !== 'false') {
           if (!isAddRouter) {
             isAddRouter = true
             router.addRoutes([
@@ -42,14 +43,14 @@ router.beforeEach(async(to, from, next) => {
                 name: '用户管理',
                 meta: {
                   title: '用户管理',
-                  icon: 'el-icon-lock'
+                  icon: 'el-icon-user'
                 },
                 hidden: false,
                 children: [{
                   path: 'userManagement',
                   name: 'UserManagement',
                   component: () => import('@/views/userManagement/index'),
-                  meta: { title: '用户管理', icon: 'dashboard' }
+                  meta: { title: '用户管理', icon: 'el-icon-user' }
                 }]
               },
               {
@@ -62,7 +63,7 @@ router.beforeEach(async(to, from, next) => {
                   title: '用户统计',
                   icon: 'el-icon-lock'
                 },
-                hidden: false,
+                hidden: true,
                 children: [{
                   path: 'userStatistics',
                   name: 'UserStatistics',
@@ -80,14 +81,14 @@ router.beforeEach(async(to, from, next) => {
               name: '用户管理',
               meta: {
                 title: '用户管理',
-                icon: 'el-icon-lock'
+                icon: 'el-icon-user'
               },
               hidden: false,
               children: [{
                 path: 'userManagement',
                 name: 'UserManagement',
                 component: () => import('@/views/userManagement/index'),
-                meta: { title: '用户管理', icon: 'dashboard' }
+                meta: { title: '用户管理', icon: 'el-icon-user' }
               }]
             },
             {
@@ -100,7 +101,7 @@ router.beforeEach(async(to, from, next) => {
                 title: '用户统计',
                 icon: 'el-icon-lock'
               },
-              hidden: false,
+              hidden: true,
               children: [{
                 path: 'userStatistics',
                 name: 'UserStatistics',
@@ -110,6 +111,8 @@ router.beforeEach(async(to, from, next) => {
             }
             )
           }
+        } else {
+          console.log('不是admin')
         }
         next()
       } else {
