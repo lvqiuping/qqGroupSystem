@@ -13,6 +13,7 @@
         :right-button-group="false"
         :left-button-group="false"
         :multiple-table="false"
+        :header-cell-style="{background: '#409EFF', color: '#fff'}"
       />
     </div>
     <div style="margin-top: 10px">群人数： {{ total }} 人</div>
@@ -68,12 +69,12 @@ export default {
           show: true,
           type: 'text'
         },
-        {
-          label: '入群时间',
-          value: 'join_time',
-          show: true,
-          type: 'text'
-        },
+        // {
+        //   label: '入群时间',
+        //   value: 'join_time',
+        //   show: true,
+        //   type: 'text'
+        // },
         {
           label: '最后发言',
           value: 'lastSpeakTime',

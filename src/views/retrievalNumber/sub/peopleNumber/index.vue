@@ -17,7 +17,7 @@
 <script>
 import Pagination from '@/components/BasicTable/Pagination.vue'
 import BasicTable from '@/components/BasicTable/index.vue'
-import { GetGroupMemberPageList } from '@/api/retrievalNumber'
+import { GetGroupMemberPageList, ExportAllGroupMembers } from '@/api/retrievalNumber'
 import { getList } from '@/utils'
 import { QueryBox } from '@/utils/feedback'
 
@@ -33,12 +33,25 @@ export default {
         title: '表格筛选',
         size: 'default',
         type: 'success',
+        selected: false,
         fields: [
           {
-            text: '导出',
-            icon: 'el-icon-upload2'
+            text: '导出本页',
+            icon: 'el-icon-upload2',
+            type: 'one'
+          },
+          {
+            text: '导出全部',
+            icon: 'el-icon-upload2',
+            type: 'all'
           }
         ]
+        // selectList: [
+        //   { type: 'one' },
+        //   { type: 'all' },
+        //   { type: 'allqq' },
+        //   { type: 'allphone' }
+        // ]
       },
       searchForm: {
         show: true,
@@ -127,23 +140,6 @@ export default {
           show: true,
           type: 'text'
         }
-
-        // {
-        //   label: '操作',
-        //   show: true,
-        //   type: 'options',
-        //   options: [
-        //     {
-        //       text: '导出',
-        //       icon: 'el-icon-upload2',
-        //       type: 'success',
-        //       clickEvent: (row) => {
-        //         console.log(row)
-        //         this.downloadExcel()
-        //       }
-        //     }
-        //   ]
-        // }
       ],
       tableData: [],
       total: 0,
@@ -170,14 +166,25 @@ export default {
       this.loading = true
       getList(this, GetGroupMemberPageList, this.listQuery)
     },
-    operateEmit2() {
-      this.downloadExcel()
+    operateEmit2(v) {
+      console.log(v)
+      console.log(this.listQuery)
+      this.downloadExcel(v)
     },
     // 导出
-    downloadExcel() {
+    downloadExcel(v) {
       QueryBox('将导出为excel文件，确认导出?').then(() => {
-        this.excelData = this.tableData
-        this.export2Excel(this.excelData, this.tableTitle, 'hao')
+        if (v === 'one') {
+          this.excelData = this.tableData
+          this.export2Excel(this.excelData, this.tableTitle, '导出群成员')
+        } else if (v === 'all') {
+          const params = `groupQQ=${this.listQuery.groupQQ}&onlyHasPhone=${this.listQuery.onlyHasPhone}`
+          ExportAllGroupMembers(params).then((res) => {
+            console.log('导出的数据', res)
+            this.excelData = res.data
+            this.export2Excel(this.excelData, this.tableTitle, '导出群成员')
+          })
+        }
       }).catch(() => {
 
       })

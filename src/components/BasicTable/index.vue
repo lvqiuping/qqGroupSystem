@@ -32,7 +32,7 @@
       :data="tableData"
       :height="height"
       :row-class-name="rowClassName"
-      :header-cell-style="{background: '#f5f7fa'}"
+      :header-cell-style="headerCellStyle"
       style="width: 100%"
       border
       @selection-change="handleSelectionChange"
@@ -89,6 +89,10 @@ export default {
     showTable: { type: Boolean, default: true },
     loading: { type: Boolean, default: false },
     height: { type: Number, default: null },
+    // eslint-disable-next-line vue/require-valid-default-prop
+    headerCellStyle: { type: Object, default: function() {
+      return { background: '#f5f7fa' }
+    } },
     // 特别操作
     searchForm: { type: Object, default: null },
     isShowGroup: { type: Boolean, default: true },
@@ -124,8 +128,8 @@ export default {
       this.b_data = v
       this.$emit('searchFormEmit2', this.b_data)
     },
-    operateEmit() {
-      this.$emit('operateEmit2')
+    operateEmit(v) {
+      this.$emit('operateEmit2', v)
     },
     handleSelectionChange(val) {
       this.selectDate = val

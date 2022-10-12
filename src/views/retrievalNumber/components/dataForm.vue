@@ -17,7 +17,7 @@
         :type="loginStatus === 0 ? 'info' : loginStatus === 1 ? 'primary' : 'danger'"
         @click="next(loginStep)"
       >
-        {{ loginStep === 2 ? '完成' : '下一步' }}
+        {{ loginStep === 2 ? '立即提取' : '下一步' }}
         <span>
           （{{ loginStatusText }}）
         </span>
@@ -46,7 +46,7 @@ export default {
       nextLoading: false,
       isStep: true,
       loginStatus: 0, // 0 1 2
-      loginStatusText: '未登录',
+      loginStatusText: '未登录，请扫码',
       eCode: '',
       loginToken: '',
       qqGroups: {},
@@ -59,11 +59,11 @@ export default {
       qqGroupsParams: { qq: '' },
       listQuery: { // 传给表格
         qq: '',
-        groupCode: '',
         insertDb: false
       },
       tableData: [],
-      total: 0
+      total: 0,
+      params2: {}
     }
   },
   created() {
@@ -113,7 +113,7 @@ export default {
               TipsBox('error', b.text)
               this.loginStatus = 0
               this.nextLoading = false
-              this.loginStatusText = '未登录'
+              this.loginStatusText = '未登录，请扫码'
             }
             if (b.code === 302) {
               TipsBox('warning', b.text)
@@ -138,9 +138,8 @@ export default {
       } else if (step === 2) {
         this.nextLoading = false
         this.listQuery.insertDb = true
-        this.listQuery = Object.assign({}, this.listQuery, this.listQuery)
-        console.log(this.listQuery)
-        this.getMems(this.listQuery, step)
+        this.listQuery2 = Object.assign({}, this.listQuery, this.listQuery)
+        this.getMems(this.listQuery2, this.params2, step)
       }
     },
     getAllGroup() {
@@ -169,19 +168,26 @@ export default {
       })
     },
     getGetGroupMembers2(v) {
-      console.log(v)
+      console.log('body要的json数据', JSON.stringify(v))
       this.loginStep = 2
       this.isStep = true
       this.listQuery.qq = this.qqGroupsParams.qq
-      this.listQuery.groupCode = v.gc
+      this.params2 = {
+        'gc': v.gc.toString(),
+        'gn': v.gn.toString(),
+        'owner': v.owner.toString()
+      }
       this.qqGroupsItems = v
-      this.getMems(this.listQuery, 0)
+      this.getMems(this.listQuery, this.params2, 0)
     },
-    getMems(v, s) {
+    getMems(v, v2, s) {
       this.loading = true
       this.nextLoading = true
       console.log('参数', v)
-      GetGroupMembers(v).then((res) => {
+      console.log('参数2', v2)
+      const params = `qq=${v.qq}&insertDb=${v.insertDb}`
+      console.log(params)
+      GetGroupMembers(params, v2).then((res) => {
         console.log('成员', JSON.parse(res.data))
         var d = JSON.parse(res.data)
         if (d.code === 200) {

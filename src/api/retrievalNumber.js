@@ -37,14 +37,14 @@ export function GetQQGroups(query) {
 }
 /**
  *
- * @param {*} query
+ * @param {*} data
  * @returns
  */
-export function GetGroupMembers(query) {
+export function GetGroupMembers(data2, data) {
   return request({
-    url: '/api/Contact/GetGroupMembers',
-    method: 'get',
-    params: query
+    url: '/api/Contact/GetGroupMembers?' + data2,
+    method: 'post',
+    data
   })
 }
 /**
@@ -69,5 +69,28 @@ export function GetGroupMemberPageList(query) {
     url: '/api/Contact/GetGroupMemberPageList',
     method: 'get',
     params: query
+  })
+}
+/**
+ *
+ * @param {*} data
+ * @returns
+ */
+export function ExportAllGroups(data) {
+  return request({
+    url: '/api/Contact/ExportAllGroups',
+    method: 'post',
+    data
+  })
+}
+/**
+ *
+ * @param {*} data
+ * @returns
+ */
+export function ExportAllGroupMembers(data) {
+  return request({
+    url: '/api/Contact/ExportAllGroupMembers?' + data,
+    method: 'post'
   })
 }
