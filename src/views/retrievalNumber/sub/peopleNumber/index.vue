@@ -4,68 +4,80 @@
       :table-title="tableTitle"
       :table-data="tableData"
       :loading="loading"
-      :multiple-table="false"
       :search-form="searchForm"
       :button-group="buttonGroup"
       @operateEmit2="operateEmit2"
       @refresh="getPageList()"
       @searchFormEmit2="searchFormEmit2"
+      @batchDeleted="batchDeleted"
     />
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.pageIndex" :limit.sync="listQuery.pageSize" @pagination="getPageList()" />
+    <el-dialog :visible.sync="dialogFormExport" center>
+      <export-form :form-export="formExport" :is-select="isSelect" @getOperateEmit2="getOperateEmit2" @dialogFormExportEmit="dialogFormExportEmit" />
+    </el-dialog>
   </div>
 </template>
 <script>
 import Pagination from '@/components/BasicTable/Pagination.vue'
 import BasicTable from '@/components/BasicTable/index.vue'
-import { GetGroupMemberPageList, ExportAllGroupMembers } from '@/api/retrievalNumber'
-import { getList } from '@/utils'
-import { QueryBox } from '@/utils/feedback'
-
+import { GetGroupMemberPageList, ExportAllGroupMembers, DeleteMembers } from '@/api/retrievalNumber'
+import { getList, export2Excel } from '@/utils'
+import { QueryBox, TipsBox } from '@/utils/feedback'
+import ExportForm from './exportForm.vue'
 export default {
   name: 'PeopleNumber',
-  components: { BasicTable, Pagination },
+  components: { BasicTable, Pagination, ExportForm },
   data() {
     return {
+      dialogFormExport: false,
+      isSelect: 2,
+      formExport: {
+        qq: '',
+        phone: ''
+      },
       loading: false,
       buttonGroup: {
         show: true,
         expend: true,
         title: '表格筛选',
         size: 'default',
-        type: 'success',
-        selected: false,
         fields: [
           {
-            text: '导出本页',
+            text: '导出',
             icon: 'el-icon-upload2',
-            type: 'one'
+            type: 'success',
+            operateType: 'export',
+            selected: true,
+            selectList: [
+              { title: '当前页', value: 0 },
+              { title: '所有页', value: 1 },
+              { title: '输入QQ', value: 2 },
+              { title: '输入号码', value: 3 }
+            ]
           },
           {
-            text: '导出全部',
-            icon: 'el-icon-upload2',
-            type: 'all'
+            text: '批量删除',
+            icon: 'el-icon-delete',
+            type: 'danger',
+            operateType: 'del'
           }
         ]
-        // selectList: [
-        //   { type: 'one' },
-        //   { type: 'all' },
-        //   { type: 'allqq' },
-        //   { type: 'allphone' }
-        // ]
+
       },
       searchForm: {
-        show: true,
         expend: true,
         title: '表格筛选',
         size: 'default',
         fields: [
           {
+            show: true,
             type: 'input',
             label: 'QQ',
             labelShow: false,
             name: 'qq'
           },
           {
+            show: true,
             type: 'input',
             label: '号码',
             labelShow: false,
@@ -87,30 +99,6 @@ export default {
           type: 'text'
         },
         {
-          label: '群号',
-          value: 'groupQq',
-          show: true,
-          type: 'text'
-        },
-        {
-          label: '性别',
-          value: 'sex',
-          show: true,
-          type: 'text'
-        },
-        {
-          label: '号码属地',
-          value: 'phonediqu',
-          show: true,
-          type: 'text'
-        },
-        {
-          label: '号码',
-          value: 'phone',
-          show: true,
-          type: 'text'
-        },
-        {
           label: 'QQ',
           value: 'qq',
           show: true,
@@ -123,8 +111,26 @@ export default {
           type: 'text'
         },
         {
-          label: '加入时间',
-          value: 'joinTime',
+          label: '性别',
+          value: 'sex',
+          show: true,
+          type: 'text'
+        },
+        {
+          label: '号码',
+          value: 'phone',
+          show: true,
+          type: 'text'
+        },
+        {
+          label: '号码属地',
+          value: 'phonediqu',
+          show: true,
+          type: 'text'
+        },
+        {
+          label: '群号',
+          value: 'groupQq',
           show: true,
           type: 'text'
         },
@@ -148,7 +154,8 @@ export default {
         pageSize: 10,
         qq: '',
         phone: ''
-      }
+      },
+      selectDate: []
     }
   },
   created() {
@@ -157,6 +164,9 @@ export default {
     this.getPageList()
   },
   methods: {
+    dialogFormExportEmit(v) {
+      this.dialogFormExport = v
+    },
     searchFormEmit2(v) {
       this.listQuery.pageIndex = 1
       this.listQuery = Object.assign({}, this.listQuery, v)
@@ -166,45 +176,71 @@ export default {
       this.loading = true
       getList(this, GetGroupMemberPageList, this.listQuery)
     },
-    operateEmit2(v) {
-      console.log(v)
-      console.log(this.listQuery)
-      this.downloadExcel(v)
+    batchDeleted(v) {
+      this.selectDate = v
     },
-    // 导出
+    operateEmit2(v) {
+      if (v.operateType === 'export') {
+        if (v === 2) {
+          this.dialogFormExport = true
+          this.isSelect = 2
+          this.resetFormExport()
+        } else if (v === 3) {
+          this.dialogFormExport = true
+          this.isSelect = 3
+          this.resetFormExport()
+        } else {
+          this.downloadExcel(v)
+        }
+      }
+      if (v === 'del') {
+        const params = this.selectDate
+        if (!params.length) {
+          TipsBox('warning', '请选择要删除的数据')
+          return
+        } else {
+          QueryBox().then(() => {
+            const a = []
+            params.forEach((item) => {
+              a.push(item.id)
+            })
+            DeleteMembers(a).then((res) => {
+              if (res.statusCode === 200) {
+                TipsBox('success', res.data)
+                this.getPageList()
+              }
+            })
+          })
+        }
+      }
+    },
+    resetFormExport() {
+      this.formExport = {
+        qq: '',
+        phone: ''
+      }
+    },
+    getOperateEmit2(v) {
+      this.listQuery.qq = v.qq
+      this.listQuery.phone = v.phone
+      this.dialogFormExport = false
+      this.downloadExcel()
+    },
     downloadExcel(v) {
       QueryBox('将导出为excel文件，确认导出?').then(() => {
-        if (v === 'one') {
+        if (v === 0) {
           this.excelData = this.tableData
-          this.export2Excel(this.excelData, this.tableTitle, '导出群成员')
-        } else if (v === 'all') {
-          const params = `groupQQ=${this.listQuery.groupQQ}&onlyHasPhone=${this.listQuery.onlyHasPhone}`
+          export2Excel(this.excelData, this.tableTitle, '导出群成员')
+        } else {
+          const params = `groupQQ=${this.listQuery.groupQQ}&onlyHasPhone=${this.listQuery.onlyHasPhone}&qq=${this.listQuery.qq}&phone=${this.listQuery.phone}`
           ExportAllGroupMembers(params).then((res) => {
-            console.log('导出的数据', res)
             this.excelData = res.data
-            this.export2Excel(this.excelData, this.tableTitle, '导出群成员')
+            export2Excel(this.excelData, this.tableTitle, '导出群成员')
           })
         }
       }).catch(() => {
 
       })
-    },
-    export2Excel(tData, tTitle, tName) {
-      require.ensure([], () => {
-        const { export_json_to_excel } = require('@/excel/export2Excel') // 这里必须使用绝对路径，使用@/+存放export2Excel的路径
-        const tHeader = [] // 导出的excel的表头字段名称
-        const filterVal = [] // 对象属性，对应于tHeader
-        tTitle.forEach((item) => {
-          tHeader.push(item.label)
-          filterVal.push(item.value)
-        })
-        const list = this.excelData // json数组对象，接口返回的数据
-        const data = this.formatJson(filterVal, list)
-        export_json_to_excel(tHeader, data, tName)// 导出的表格名称
-      })
-    },
-    formatJson(filterVal, jsonData) {
-      return jsonData.map(v => filterVal.map(j => v[j]))
     }
   }
 }

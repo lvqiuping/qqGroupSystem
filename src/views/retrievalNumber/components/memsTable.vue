@@ -13,7 +13,6 @@
         :right-button-group="false"
         :left-button-group="false"
         :multiple-table="false"
-        :header-cell-style="{background: '#409EFF', color: '#fff'}"
       />
     </div>
     <div style="margin-top: 10px">群人数： {{ total }} 人</div>
@@ -27,11 +26,11 @@ export default {
   props: {
     tableData: { type: Array, default: Array },
     total: { type: Number, default: 0 },
-    qqGroupsItems: { type: Object, default: Object }
+    qqGroupsItems: { type: Object, default: Object },
+    loading: { type: Boolean, default: false }
   },
   data() {
     return {
-      loading: false,
       tableTitle: [
         {
           label: '序号',

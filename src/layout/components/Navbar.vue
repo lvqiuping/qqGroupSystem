@@ -86,7 +86,6 @@ export default {
   methods: {
     changePassword() {
       this.resetTemp()
-      console.log('userId', this.userId)
       this.passwordtemp.userId = this.userId
       this.dialogPasswordVisible = true
     },
@@ -97,7 +96,6 @@ export default {
       }
     },
     createPassword(v) {
-      console.log(v)
       UpdatePassword(v).then((res) => {
         this.loading = true
         if (res.statusCode === 200) {

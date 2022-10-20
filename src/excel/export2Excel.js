@@ -93,7 +93,6 @@ function s2ab(s) {
 
 export function export_table_to_excel(id) {
   var theTable = document.getElementById(id);
-  console.log('a')
   var oo = generateArray(theTable);
   var ranges = oo[1];
 

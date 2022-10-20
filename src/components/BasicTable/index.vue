@@ -55,7 +55,10 @@
             <slot :name="item.slot" :row="scope.row" :column="item.prop" :index="scope.$index" />
           </div>
           <div v-else-if="item.type == 'router'">
-            <router-link :to="{path: item.path, query: { onlyHasPhone: item.onlyHasPhone, groupQQ: scope.row.groupQq } }" style="color: #409EFF">{{ scope.row[item.value] }}</router-link>
+            <router-link :to="{path: item.path, query: { onlyHasPhone: item.onlyHasPhone, groupQQ: scope.row.groupQq } }" style="color: #409EFF">
+              {{ scope.row[item.value] }}
+              <!-- <el-tag v-if="item.status" :type="scope.row[item.value] === 0 ? 'danger' : 'primary'">{{ scope.row[item.value] === 0 ? '进行中' : '已完成' }}</el-tag> -->
+            </router-link>
           </div>
           <div v-else-if="item.type == 'options'">
             <el-button
@@ -91,7 +94,7 @@ export default {
     height: { type: Number, default: null },
     // eslint-disable-next-line vue/require-valid-default-prop
     headerCellStyle: { type: Object, default: function() {
-      return { background: '#f5f7fa' }
+      return { background: '#409EFF', color: '#fff' }
     } },
     // 特别操作
     searchForm: { type: Object, default: null },
@@ -103,8 +106,7 @@ export default {
   },
   data() {
     return {
-      selectDate: [],
-      selectTableData: [],
+      // selectDate: [],
       total: 0,
       b_data: {},
       temp: {
@@ -114,6 +116,7 @@ export default {
   },
   methods: {
     rowClassName({ row, rowIndex }) {
+      row.index = rowIndex
       row.xh = rowIndex + 1
     },
     sortChange({ column, prop, order }) {
@@ -132,11 +135,11 @@ export default {
       this.$emit('operateEmit2', v)
     },
     handleSelectionChange(val) {
-      this.selectDate = val
+      this.$emit('batchDeleted', val)
     },
-    batchDeleted() {
-      this.$emit('batchDeleted', this.selectDate)
-    },
+    // batchDeleted() {
+    //   this.$emit('batchDeleted', this.selectDate)
+    // },
     refresh() {
       this.$emit('refresh')
     }

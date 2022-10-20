@@ -44,7 +44,6 @@ const actions = {
   login({ commit }, userInfo) {
     return new Promise((resolve, reject) => {
       login(userInfo).then(response => {
-        console.log('response', response)
         var str = userInfo.split('&')
         var obj = {}
         str.map((e) => {
@@ -75,6 +74,7 @@ const actions = {
   logout({ commit, state }) {
     return new Promise((resolve, reject) => {
       const params = `userId=${Cookies.get('userId')}`
+      console.log('登出参数', params)
       logout(params).then(() => {
         removeToken() // must remove  token  first
         removeRefreshToken()

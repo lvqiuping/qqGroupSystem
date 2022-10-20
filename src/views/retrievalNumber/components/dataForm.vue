@@ -1,13 +1,13 @@
 <template>
   <div>
     <div v-if="loginStep === 0" style="width:50%;text-align:center;margin:auto; margin-bottom: 50px;">
-      <ecode-card :e-code="eCode" :e-conde-image-loading="eCondeImageLoading" @getEcode="getEcode" />
+      <ecode-card :e-code="eCode" :e-conde-image-loading="eCondeImageLoading" :show-code="loginStatus === 1 ? true : false" @getEcode="getEcode" />
     </div>
     <div v-else-if="loginStep === 1">
       <mems-card :qq-groups="qqGroups" @getGetGroupMembers="getGetGroupMembers2" @prev="prev" />
     </div>
     <div v-else-if="loginStep === 2">
-      <mems-table :table-data="tableData" :total="total" :qq-groups-items="qqGroupsItems" @prev="prev" />
+      <mems-table v-loading="loading" :table-data="tableData" :total="total" :qq-groups-items="qqGroupsItems" @prev="prev" />
     </div>
     <!-- 按钮 -->
     <div v-show="isStep" slot="footer" style="margin-top: 20px; text-align: center;">
@@ -38,15 +38,14 @@ export default {
   name: 'DataForm',
   components: { MemsTable, MemsCard, EcodeCard },
   props: {
-
   },
   data() {
     return {
+      loginStatus: 0,
       eCondeImageLoading: false,
       nextLoading: false,
       isStep: true,
-      loginStatus: 0, // 0 1 2
-      loginStatusText: '未登录，请扫码',
+      loginStatusText: '未登录',
       eCode: '',
       loginToken: '',
       qqGroups: {},
@@ -63,7 +62,8 @@ export default {
       },
       tableData: [],
       total: 0,
-      params2: {}
+      params2: {},
+      listQuery2: {}
     }
   },
   created() {
@@ -76,7 +76,6 @@ export default {
     getEcode() {
       this.eCondeImageLoading = true
       GetQQLoginImage().then((res) => {
-        console.log('获得二维码', JSON.parse(res.data))
         const a = JSON.parse(res.data)
         if (a.code === 200) {
           this.eCondeImageLoading = false
@@ -91,7 +90,6 @@ export default {
         if (this.loginToken) {
           var params = `token=${this.loginToken}`
           LoginConfirm(params).then((res) => {
-            console.log('获得的qq名字', JSON.parse(res.data))
             // 400:参数错误，302:二维码认证中，401：未登录或登录过期，301：二维码未失效，303:二维码已失效   // 未扫码就无法获取qq号
             const b = JSON.parse(res.data)
             if (b.code === 200) {
@@ -144,7 +142,6 @@ export default {
     },
     getAllGroup() {
       GetQQGroups({ qq: Cookies.get('qqGroupsParams') }).then((res) => {
-        console.log('所有群', JSON.parse(res.data))
         var c = JSON.parse(res.data)
         if (c.code === 200) {
           this.loginStep = 1
@@ -168,7 +165,6 @@ export default {
       })
     },
     getGetGroupMembers2(v) {
-      console.log('body要的json数据', JSON.stringify(v))
       this.loginStep = 2
       this.isStep = true
       this.listQuery.qq = this.qqGroupsParams.qq
@@ -182,22 +178,17 @@ export default {
     },
     getMems(v, v2, s) {
       this.loading = true
-      this.nextLoading = true
-      console.log('参数', v)
-      console.log('参数2', v2)
       const params = `qq=${v.qq}&insertDb=${v.insertDb}`
-      console.log(params)
       GetGroupMembers(params, v2).then((res) => {
-        console.log('成员', JSON.parse(res.data))
         var d = JSON.parse(res.data)
         if (d.code === 200) {
           this.loading = false
-          this.nextLoading = false
           this.tableData = d.data.mems
           this.total = d.data.count
           if (s === 2) {
             TipsBox('success', d.text)
             this.$emit('dialogFormVisibleEmit', false)
+            this.$emit('memberStatusParams', v2.gn)
           }
         }
       }).catch(error => {
@@ -212,6 +203,9 @@ export default {
       } else if (v === 2) {
         this.isStep = false
         this.loginStep = 1
+        // 下面2步是切换的时候重置insertDb， 不然就是上一步的true
+        this.listQuery.insertDb = false
+        this.listQuery2 = Object.assign({}, this.listQuery, this.listQuery)
       }
     }
   }

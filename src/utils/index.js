@@ -136,3 +136,22 @@ export function getList(obj, api, params) {
     }
   })
 }
+
+export function export2Excel(tData, tTitle, tName) {
+  require.ensure([], () => {
+    const { export_json_to_excel } = require('@/excel/export2Excel') // 这里必须使用绝对路径，使用@/+存放export2Excel的路径
+    const tHeader = [] // 导出的excel的表头字段名称
+    const filterVal = [] // 对象属性，对应于tHeader
+    tTitle.forEach((item) => {
+      tHeader.push(item.label)
+      filterVal.push(item.value)
+    })
+    const list = tData // json数组对象，接口返回的数据
+    const data = formatJson(filterVal, list)
+    export_json_to_excel(tHeader, data, tName)// 导出的表格名称
+  })
+}
+
+export function formatJson(filterVal, jsonData) {
+  return jsonData.map(v => filterVal.map(j => v[j]))
+}

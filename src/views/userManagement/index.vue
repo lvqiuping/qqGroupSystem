@@ -158,7 +158,6 @@ export default {
         TipsBox('error', '不允许更改超级管理员信息')
         return
       }
-      console.log(v)
       QueryBox('是否修改用户状态').then(() => {
         if (v.userStatus === 1) {
           v.userStatus = 0
@@ -167,7 +166,6 @@ export default {
         }
         const params = `userId=${v.id}&status=${v.userStatus}`
         ChangeUserStauts(params).then((res) => {
-          console.log(res)
           this.loading = true
           if (res.statusCode === 200) {
             this.loading = false
@@ -206,9 +204,7 @@ export default {
       }
     },
     createDataEmit(v) {
-      console.log(v)
       AddUser(v).then((res) => {
-        console.log(res)
         this.loading = true
         if (res.statusCode === 200) {
           this.loading = false

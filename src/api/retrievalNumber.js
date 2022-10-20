@@ -73,6 +73,18 @@ export function GetGroupMemberPageList(query) {
 }
 /**
  *
+ * @param {*} query
+ * @returns
+ */
+export function GetUpdateMemberStatus(query) {
+  return request({
+    url: '/api/Contact/GetUpdateMemberStatus',
+    method: 'get',
+    params: query
+  })
+}
+/**
+ *
  * @param {*} data
  * @returns
  */
@@ -92,5 +104,30 @@ export function ExportAllGroupMembers(data) {
   return request({
     url: '/api/Contact/ExportAllGroupMembers?' + data,
     method: 'post'
+  })
+}
+
+/**
+ *
+ * @param {*} data
+ * @returns
+ */
+export function DeleteGroups(data) {
+  return request({
+    url: '/api/Contact/DeleteGroups',
+    method: 'post',
+    data
+  })
+}
+/**
+ *
+ * @param {*} data
+ * @returns
+ */
+export function DeleteMembers(data) {
+  return request({
+    url: '/api/Contact/DeleteMembers',
+    method: 'post',
+    data
   })
 }
