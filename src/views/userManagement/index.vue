@@ -122,12 +122,12 @@ export default {
         userId: ''
       },
       searchForm: {
-        show: true,
         expend: true,
         title: '表格筛选',
         size: 'default',
         fields: [
           {
+            show: true,
             type: 'input',
             label: '用户名',
             labelShow: false,
@@ -136,12 +136,13 @@ export default {
         ]
       },
       buttonGroup: {
-        show: true,
         expend: true,
+        show: true,
         title: '表格筛选',
         size: 'default',
         fields: [
           {
+            showButtonGroup: true,
             text: '添加',
             icon: 'el-icon-check'
           }
