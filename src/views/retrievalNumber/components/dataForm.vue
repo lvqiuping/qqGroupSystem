@@ -33,7 +33,7 @@ import Cookies from 'js-cookie'
 import MemsTable from './memsTable.vue'
 import MemsCard from './memsCard.vue'
 import EcodeCard from './ecodeCard.vue'
-import { GetGroupMembers } from '@/api/retrievalNumber'
+import { GetGroupMembers, InsertGroupMembers } from '@/api/retrievalNumber'
 export default {
   name: 'DataForm',
   components: { MemsTable, MemsCard, EcodeCard },
@@ -58,11 +58,12 @@ export default {
       qqGroupsParams: { qq: '' },
       listQuery: { // 传给表格
         qq: '',
-        insertDb: false
+        groupQQ: ''
       },
       tableData: [],
       total: 0,
-      params2: {},
+      insertParams: {},
+      groupItem: {},
       listQuery2: {}
     }
   },
@@ -70,7 +71,12 @@ export default {
     this.qqGroupsParams.qq = Cookies.get('qqGroupsParams')
     this.loginStatus = this.qqGroupsParams.qq ? 1 : 0
     this.loginStatusText = this.qqGroupsParams.qq ? '已登录' : '未登录'
-    this.getEcode()
+    if (Cookies.get('ecodeLoginToken')) {
+      this.loginToken = Cookies.get('ecodeLoginToken')
+      this.eCode = Cookies.get('eCodeImg')
+    } else {
+      this.getEcode()
+    }
   },
   methods: {
     getEcode() {
@@ -81,6 +87,8 @@ export default {
           this.eCondeImageLoading = false
           this.loginToken = a.data.token
           this.eCode = a.data.pic_base64
+          Cookies.set('ecodeLoginToken', this.loginToken)
+          Cookies.set('eCodeImg', this.eCode)
         }
       })
     },
@@ -99,7 +107,7 @@ export default {
               Cookies.set('qqGroupsParams', this.qqGroupsParams.qq)
               this.getAllGroup()
             }
-            if (b.code === 301) {
+            if (b.code === 301 || b.code === 303) {
               if (this.qqGroupsParams.qq) {
                 this.loginStatus = 1
                 this.getAllGroup()
@@ -135,9 +143,7 @@ export default {
         }
       } else if (step === 2) {
         this.nextLoading = false
-        this.listQuery.insertDb = true
-        this.listQuery2 = Object.assign({}, this.listQuery, this.listQuery)
-        this.getMems(this.listQuery2, this.params2, step)
+        this.insertMems(this.insertParams)
       }
     },
     getAllGroup() {
@@ -165,47 +171,89 @@ export default {
       })
     },
     getGetGroupMembers2(v) {
+      console.log('群成员参数', v)
       this.loginStep = 2
       this.isStep = true
       this.listQuery.qq = this.qqGroupsParams.qq
-      this.params2 = {
+      this.listQuery.groupQQ = v.gc
+      this.groupItem = {
         'gc': v.gc.toString(),
         'gn': v.gn.toString(),
         'owner': v.owner.toString()
       }
       this.qqGroupsItems = v
-      this.getMems(this.listQuery, this.params2, 0)
+      this.getMems(this.listQuery, 0)
     },
-    getMems(v, v2, s) {
+    getMems(v) {
       this.loading = true
-      const params = `qq=${v.qq}&insertDb=${v.insertDb}`
-      GetGroupMembers(params, v2).then((res) => {
-        var d = JSON.parse(res.data)
-        if (d.code === 200) {
-          this.loading = false
-          this.tableData = d.data.mems
-          this.total = d.data.count
-          if (s === 2) {
-            TipsBox('success', d.text)
-            this.$emit('dialogFormVisibleEmit', false)
-            this.$emit('memberStatusParams', v2.gn)
+      console.log('成员参数', v)
+      if (v.qq && v.groupQQ) {
+        const params = `qq=${v.qq}&groupQQ=${v.groupQQ}`
+        GetGroupMembers(params).then((res) => {
+          var d = JSON.parse(res.data)
+          console.log('成员列表', d.data)
+          if (d.code === 200) {
+            var a = d.data.mems
+            console.log(a)
+            const aa = []
+            a.forEach((item) => {
+              aa.push({
+                'groupEntry': item.groupEntry,
+                'joinTime': item.joinTime, // === null ? null : item.joinTime
+                'lastSpeakTime': item.lastSpeakTime,
+                'nick': item.nick,
+                'qAge': item.qAge,
+                'qq': item.qq,
+                'sex': item.sex
+              })
+            })
+
+            this.insertParams = {
+              'groupItem': this.groupItem,
+              'qq': d.data.qq,
+              'memberData': {
+                'groupcode': d.data.groupCode,
+                'mems': aa
+              }
+            }
+            this.loading = false
+            this.tableData = d.data.mems
+            this.total = d.data.count
           }
-        }
-      }).catch(error => {
-        TipsBox('error', error)
-      })
+        }).catch(error => {
+          TipsBox('error', error)
+        })
+      } else {
+        TipsBox('error', '参数有误')
+        this.loading = false
+      }
+    },
+    insertMems(p) {
+      console.log('插入', p)
+      if (p) {
+        InsertGroupMembers(p).then((res) => {
+          console.log(res)
+          if (res.statusCode === 200) {
+            TipsBox('success', res.data)
+            this.$emit('dialogFormVisibleEmit', false)
+          }
+        }).catch(error => {
+          TipsBox('error', error)
+          return
+        })
+      } else {
+        TipsBox('error', '参数有误')
+        return
+      }
     },
     prev(v) {
       if (v === 1) {
         this.loginStep = 0
         this.isStep = true
-        this.getEcode()
+        // this.getEcode()
       } else if (v === 2) {
         this.isStep = false
         this.loginStep = 1
-        // 下面2步是切换的时候重置insertDb， 不然就是上一步的true
-        this.listQuery.insertDb = false
-        this.listQuery2 = Object.assign({}, this.listQuery, this.listQuery)
       }
     }
   }

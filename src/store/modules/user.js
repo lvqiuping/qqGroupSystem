@@ -73,7 +73,7 @@ const actions = {
   // user logout
   logout({ commit, state }) {
     return new Promise((resolve, reject) => {
-      const params = `userId=${Cookies.get('userId')}`
+      const params = `userName=${Cookies.get('permission')}`
       console.log('登出参数', params)
       logout(params).then(() => {
         removeToken() // must remove  token  first

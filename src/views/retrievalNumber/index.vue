@@ -99,7 +99,7 @@ export default {
           slot: 'memberUpdateStatus'
         },
         {
-          label: '提取人',
+          label: '提取人', // 这个必须排在index=7的位置
           value: 'createUserName',
           show: true,
           type: 'text'
@@ -131,11 +131,22 @@ export default {
             name: 'groupQQ'
           },
           {
-            show: true,
+            show: true, // 这个必须排在index=2的位置
             type: 'input',
             label: '提取人',
             labelShow: false,
             name: 'createUserName'
+          },
+          {
+            show: false,
+            type: 'select',
+            label: '状态',
+            labelShow: false,
+            name: 'memberUpdateStatus',
+            options: [
+              { label: '已完成', value: true },
+              { label: '进行中', value: false }
+            ]
           }
         ]
       },
@@ -145,7 +156,8 @@ export default {
         pageIndex: 1,
         pageSize: 10,
         groupQQ: '',
-        groupName: ''
+        groupName: '',
+        memberUpdateStatus: ''
       },
 
       buttonGroup: {

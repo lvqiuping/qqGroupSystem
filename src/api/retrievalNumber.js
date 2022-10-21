@@ -40,9 +40,20 @@ export function GetQQGroups(query) {
  * @param {*} data
  * @returns
  */
-export function GetGroupMembers(data2, data) {
+export function GetGroupMembers(data) {
   return request({
-    url: '/api/Contact/GetGroupMembers?' + data2,
+    url: '/api/Contact/GetGroupMembers?' + data,
+    method: 'post'
+  })
+}
+/**
+ *
+ * @param {*} data
+ * @returns
+ */
+export function InsertGroupMembers(data) {
+  return request({
+    url: '/api/Contact/InsertGroupMembers',
     method: 'post',
     data
   })

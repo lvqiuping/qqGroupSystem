@@ -12,6 +12,16 @@
                 @keyup.enter.native="searching()"
               />
             </el-form-item>
+            <el-form-item v-if="field.type === 'select'" style="margin-right: 10px;">
+              <el-select v-model="temp[field.name]" :placeholder="field.label" @change="searching()">
+                <el-option
+                  v-for="item in field.options"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+            </el-form-item>
           </div>
         </div>
       </template>

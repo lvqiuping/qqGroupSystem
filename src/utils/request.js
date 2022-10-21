@@ -72,8 +72,8 @@ service.interceptors.response.use(
         duration: 5 * 1000
       })
 
-      // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
-      if (res.statusCode === 401 || res.statusCode === 500) {
+      // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;  || res.statusCode === 500
+      if (res.statusCode === 401) {
         // to re-login
         MessageBox.confirm(res.errors, '提示', {
           confirmButtonText: '重新登陆',

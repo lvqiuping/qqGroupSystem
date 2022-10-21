@@ -212,6 +212,9 @@ export default {
           TipsBox('success', res.data)
           this.dialogFormVisible = false
           this.getPageList()
+        } else if (res.statusCode === 500) {
+          this.loading = false
+          TipsBox('success', res.errors)
         }
       })
     },
