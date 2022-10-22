@@ -80,16 +80,25 @@ export default {
           show: true,
           type: 'router',
           path: 'peopleNumber',
-          onlyHasPhone: false // 是否有电话,bixu
+          query: {
+            onlyHasPhone: false // 是否有电话,必须参数,
+          },
+          params: {
+            groupQQ: 'groupQq'
+          }
         },
         {
           label: '可联系人数',
-          value: 'memberWithPhoneCount', // MemberWithPhoneCount
+          value: 'memberWithPhoneCount',
           show: true,
           type: 'router',
           path: 'peopleNumber',
-          onlyHasPhone: true,
-          status: '0'
+          query: {
+            onlyHasPhone: true // 是否有电话,必须参数,
+          },
+          params: {
+            groupQQ: 'groupQq'
+          }
         },
         {
           label: '状态',

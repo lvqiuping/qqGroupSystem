@@ -1,3 +1,5 @@
+<!-- eslint-disable vue/no-parsing-error -->
+<!-- eslint-disable vue/valid-v-bind -->
 <template>
   <div>
     <div style="display: flex;flex-direction: row;justify-content: space-between; ">
@@ -55,9 +57,10 @@
             <slot :name="item.slot" :row="scope.row" :column="item.prop" :index="scope.$index" />
           </div>
           <div v-else-if="item.type == 'router'">
-            <router-link :to="{path: item.path, query: { onlyHasPhone: item.onlyHasPhone, groupQQ: scope.row.groupQq } }" style="color: #409EFF">
+            <router-link :to="{path: item.path, query: Object.assign({}, item.query, getQuery(item.params, scope.row))}" style="color: #409EFF">
+              <!-- Object.assign([], item.query, { [item.queryKey]: scope.row[item.queryValue] } ) -->
+              <!-- onlyHasPhone: item.onlyHasPhone, groupQQ: scope.row.groupQq -->
               {{ scope.row[item.value] }}
-              <!-- <el-tag v-if="item.status" :type="scope.row[item.value] === 0 ? 'danger' : 'primary'">{{ scope.row[item.value] === 0 ? '进行中' : '已完成' }}</el-tag> -->
             </router-link>
           </div>
           <div v-else-if="item.type == 'options'">
@@ -115,6 +118,13 @@ export default {
     }
   },
   methods: {
+    getQuery(params, row) {
+      const p = {}
+      for (const i in params) {
+        p[i] = row[params[i]]
+      }
+      return p
+    },
     rowClassName({ row, rowIndex }) {
       row.index = rowIndex
       row.xh = rowIndex + 1

@@ -61,14 +61,14 @@ router.beforeEach(async(to, from, next) => {
                 name: '用户统计',
                 meta: {
                   title: '用户统计',
-                  icon: 'el-icon-lock'
+                  icon: 'el-icon-s-data'
                 },
-                hidden: true,
+                hidden: false,
                 children: [{
                   path: 'userStatistics',
                   name: 'UserStatistics',
                   component: () => import('@/views/userStatistics/index'),
-                  meta: { title: '用户统计', icon: 'dashboard' }
+                  meta: { title: '用户统计', icon: 'el-icon-s-data' }
                 }]
               }
             ])
@@ -99,14 +99,14 @@ router.beforeEach(async(to, from, next) => {
               name: '用户统计',
               meta: {
                 title: '用户统计',
-                icon: 'el-icon-lock'
+                icon: 'el-icon-s-data'
               },
-              hidden: true,
+              hidden: false,
               children: [{
                 path: 'userStatistics',
                 name: 'UserStatistics',
                 component: () => import('@/views/userStatistics/index'),
-                meta: { title: '用户统计', icon: 'dashboard' }
+                meta: { title: '用户统计', icon: 'el-icon-s-data' }
               }]
             }
             )

@@ -34,7 +34,11 @@ export default {
           label: '用户',
           value: 'id',
           show: true,
-          type: 'text'
+          type: 'router',
+          path: '/retrievalNumber/retrievalNumber',
+          params: {
+            userName: 'id'
+          }
         },
         {
           label: '群数量',
@@ -63,12 +67,12 @@ export default {
         userName: ''
       },
       searchForm: {
-        show: true,
         expend: true,
         title: '表格筛选',
         size: 'default',
         fields: [
           {
+            show: true,
             type: 'input',
             label: '用户名',
             labelShow: false,
