@@ -6,6 +6,7 @@
       :loading="loading"
       :search-form="searchForm"
       :button-group="buttonGroup"
+      :multiple-table="false"
       @operateEmit2="operateEmit2"
       @refresh="getPageList()"
       @searchFormEmit2="searchFormEmit2"
@@ -161,6 +162,12 @@ export default {
   created() {
     this.listQuery.onlyHasPhone = this.$route.query.onlyHasPhone
     this.listQuery.groupQQ = this.$route.query.groupQQ
+    // if (this.$route.query) {
+    //   this.temp = {
+    //     createUserName: this.$route.query.createUserName
+    //   }
+    //   this.searchFormEmit2(this.temp)
+    // }
     this.getPageList()
   },
   methods: {

@@ -6,6 +6,7 @@
       :loading="loading"
       :button-group="buttonGroup"
       :search-form="searchForm"
+      :multiple-table="false"
       @operateEmit2="operateEmit2"
       @refresh="getPageList()"
       @searchFormEmit2="searchFormEmit2"
@@ -13,6 +14,11 @@
       <template v-slot:userStatus="scope">
         <el-tag :type="scope.row.userStatus === 0 ? 'success' : 'danger'" style="cursor:pointer;" @click="changeStatus(scope.row)">
           {{ scope.row.userStatus === 0 ? '已启用' : '已禁用' }}
+        </el-tag>
+      </template>
+      <template v-slot:drawGroupUpLimit="scope">
+        <el-tag :type="'primary'" style="cursor:pointer;" @click="clickUpLimit(scope.row)">
+          {{ scope.row.drawGroupUpLimit }}
         </el-tag>
       </template>
     </basic-table>
@@ -36,24 +42,36 @@
         />
       </div>
     </el-dialog>
+    <el-dialog :title="'修改上限'" :visible.sync="dialogUpdateUpLimit" top="3%">
+      <div class="el-dialog-div">
+        <up-limit-form
+          :up-limittemp="upLimittemp"
+          @dialogUpdateUpLimitEmit="dialogUpdateUpLimitEmit"
+          @createUpLimit="createUpLimit"
+        />
+      </div>
+    </el-dialog>
   </div>
 </template>
 <script>
+// import DataForm from '@/components/DataForm/index.vue'
 import DataForm from '@/views/userManagement/components/dataForm.vue'
 import PasswordForm from '@/views/userManagement/components/passwordForm.vue'
+import UpLimitForm from '@/views/userManagement/components/upLimitForm.vue'
 import Pagination from '@/components/BasicTable/Pagination.vue'
 import BasicTable from '@/components/BasicTable/index.vue'
-import { AddUser, GetUserPageList, ChangeUserStauts, UpdatePassword } from '@/api/userManagement'
+import { AddUser, GetUserPageList, ChangeUserStauts, UpdatePassword, UpdateDrawGroupUpLimit } from '@/api/userManagement'
 import { TipsBox } from '@/utils/feedback.js'
 import { getList } from '@/utils'
 import { QueryBox } from '@/utils/feedback'
 export default {
   name: 'UserManagement',
-  components: { BasicTable, Pagination, DataForm, PasswordForm },
+  components: { BasicTable, Pagination, DataForm, PasswordForm, UpLimitForm },
   data() {
     return {
       dialogFormVisible: false,
       dialogPasswordVisible: false,
+      dialogUpdateUpLimit: false,
       loading: false,
       tableTitle: [
         {
@@ -82,6 +100,14 @@ export default {
           slot: 'userStatus'
         },
         {
+          label: '上限',
+          value: 'drawGroupUpLimit',
+          show: true,
+          // type: 'text'
+          type: 'slot',
+          slot: 'drawGroupUpLimit'
+        },
+        {
           label: '创建时间',
           value: 'createOn',
           show: true,
@@ -102,6 +128,16 @@ export default {
                 this.passwordtemp.userId = row.id
               }
             }
+            // {
+            //   text: '上限',
+            //   icon: 'el-icon-edit',
+            //   type: 'success',
+            //   clickEvent: (row) => {
+            //     // this.resetPasswordtemp()
+            //     this.dialogUpdateUpLimit = true
+            //     this.upLimittemp.userId = row.id
+            //   }
+            // }
           ]
         }
       ],
@@ -115,11 +151,16 @@ export default {
       temp: {
         userName: '',
         realName: '',
-        password: ''
+        password: '',
+        num: 10
       },
       passwordtemp: {
         newPassword: '',
         userId: ''
+      },
+      upLimittemp: {
+        userId: '',
+        newUpLimit: 0
       },
       searchForm: {
         expend: true,
@@ -148,12 +189,31 @@ export default {
           }
         ]
       }
+      // dataFormTemp: {
+      //   fields: [
+      //     {
+      //       show: true,
+      //       type: 'input',
+      //       label: '用户名',
+      //       labelShow: false,
+      //       name: 'userName'
+      //     }
+      //   ]
+      // }
     }
   },
   created() {
     this.getPageList()
   },
   methods: {
+    clickUpLimit(row) {
+      this.dialogUpdateUpLimit = true
+      this.upLimittemp.userId = row.id
+      this.upLimittemp.newUpLimit = row.drawGroupUpLimit
+    },
+    dialogUpdateUpLimitEmit(v) {
+      this.dialogUpdateUpLimit = v
+    },
     changeStatus(v) {
       if (v.id === 1) {
         TipsBox('error', '不允许更改超级管理员信息')
@@ -195,7 +255,8 @@ export default {
       this.temp = {
         userName: '',
         realName: '',
-        password: ''
+        password: '',
+        num: 10
       }
     },
     resetPasswordtemp() {
@@ -225,6 +286,17 @@ export default {
           this.loading = false
           TipsBox('success', res.data)
           this.dialogPasswordVisible = false
+          this.getPageList()
+        }
+      })
+    },
+    createUpLimit(v) {
+      UpdateDrawGroupUpLimit(v).then((res) => {
+        this.loading = true
+        if (res.statusCode === 200) {
+          this.loading = false
+          TipsBox('success', res.data)
+          this.dialogUpdateUpLimit = false
           this.getPageList()
         }
       })

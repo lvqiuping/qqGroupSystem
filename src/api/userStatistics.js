@@ -4,9 +4,9 @@ import request from '@/utils/request'
  * @param {*} query
  * @returns
  */
-export function GetStatisticsView(query) {
+export function GetAdminStatsUserDrawPageList(query) {
   return request({
-    url: '/api/Task/GetStatisticsView',
+    url: '/api/Contact/GetAdminStatsUserDrawPageList',
     method: 'get',
     params: query
   })

@@ -32,3 +32,11 @@ export function UpdatePassword(data) {
     data
   })
 }
+export function UpdateDrawGroupUpLimit(data) {
+  return request({
+    url: '/api/User/UpdateDrawGroupUpLimit',
+    method: 'post',
+    data
+  })
+}
+

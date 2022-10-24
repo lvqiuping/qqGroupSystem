@@ -6,6 +6,7 @@
       :loading="loading"
       :search-form="searchForm"
       :button-group="buttonGroup"
+      :multiple-table="false"
       @refresh="getPageList()"
       @searchFormEmit2="searchFormEmit2"
     />
@@ -15,7 +16,7 @@
 <script>
 import Pagination from '@/components/BasicTable/Pagination.vue'
 import BasicTable from '@/components/BasicTable/index.vue'
-import { GetUserPageList } from '@/api/userManagement'
+import { GetAdminStatsUserDrawPageList } from '@/api/userStatistics'
 import { getList } from '@/utils'
 export default {
   name: 'UserStatistics',
@@ -31,32 +32,54 @@ export default {
       loading: false,
       tableTitle: [
         {
-          label: '用户',
-          value: 'id',
+          label: 'ID',
+          value: 'userId',
           show: true,
-          type: 'router',
-          path: '/retrievalNumber/retrievalNumber',
-          params: {
-            userName: 'id'
-          }
+          type: 'text'
         },
         {
-          label: '群数量',
+          label: '用户',
           value: 'userName',
           show: true,
           type: 'text'
         },
         {
-          label: 'QQ成员数量',
-          value: 'realName',
+          label: 'QQ群',
+          value: 'groupCount',
           show: true,
-          type: 'text'
+          type: 'router',
+          path: '/retrievalNumber/retrievalNumber',
+          params: {
+            createUserName: 'userName'
+          }
         },
         {
-          label: '已获得手机号',
-          value: 'createOn',
+          label: '群人数',
+          value: 'memeberCount',
           show: true,
           type: 'text'
+          // type: 'router',
+          // path: '/retrievalNumber/peopleNumber',
+          // query: {
+          //   onlyHasPhone: false // 是否有电话,必须参数,
+          // },
+          // params: {
+          //   createUserName: 'userName'
+          // }
+        },
+        {
+          show: true,
+          label: '可联系人数',
+          value: 'memberWithPhoneCount',
+          type: 'text'
+          // type: 'router',
+          // path: 'peopleNumber',
+          // query: {
+          //   onlyHasPhone: true // 是否有电话,必须参数,
+          // },
+          // params: {
+          //   groupQQ: 'groupQq'
+          // }
         }
       ],
       tableData: null,
@@ -93,7 +116,7 @@ export default {
     },
     getPageList() {
       this.loading = false
-      getList(this, GetUserPageList, this.listQuery)
+      getList(this, GetAdminStatsUserDrawPageList, this.listQuery)
     }
   }
 }

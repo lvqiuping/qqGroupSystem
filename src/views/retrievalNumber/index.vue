@@ -6,6 +6,7 @@
       :loading="loading"
       :search-form="searchForm"
       :button-group="buttonGroup"
+      :multiple-table="false"
       @refresh="getPageList()"
       @searchFormEmit2="searchFormEmit2"
       @operateEmit2="operateEmit2"
@@ -199,6 +200,12 @@ export default {
   created() {
     // debugger
     this.isAdmin = Cookies.get('isAdmin')
+    if (this.$route.query) {
+      this.temp = {
+        createUserName: this.$route.query.createUserName
+      }
+      this.searchFormEmit2(this.temp)
+    }
     this.getPageList()
   },
   beforeDestroy() {

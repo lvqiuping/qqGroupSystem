@@ -98,7 +98,7 @@ export default {
         if (this.loginToken) {
           var params = `token=${this.loginToken}`
           LoginConfirm(params).then((res) => {
-            // 400:参数错误，302:二维码认证中，401：未登录或登录过期，301：二维码未失效，303:二维码已失效   // 未扫码就无法获取qq号
+            // 400:参数错误，302:二维码认证中，401：未登录或登录过期，301：二维码未失效，303:二维码已失效 304返回状态，本次登录被拒绝  // 未扫码就无法获取qq号
             const b = JSON.parse(res.data)
             if (b.code === 200) {
               this.loginStatus = 1
@@ -123,6 +123,11 @@ export default {
             }
             if (b.code === 302) {
               TipsBox('warning', b.text)
+              this.loginStatus = 0
+              this.nextLoading = false
+            }
+            if (b.code === 304) {
+              TipsBox('warning', b.text || '本次登录被拒绝，请稍后重试')
               this.loginStatus = 0
               this.nextLoading = false
             }
