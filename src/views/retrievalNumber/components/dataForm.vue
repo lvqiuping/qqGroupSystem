@@ -176,7 +176,6 @@ export default {
       })
     },
     getGetGroupMembers2(v) {
-      console.log('群成员参数', v)
       this.loginStep = 2
       this.isStep = true
       this.listQuery.qq = this.qqGroupsParams.qq
@@ -191,15 +190,12 @@ export default {
     },
     getMems(v) {
       this.loading = true
-      console.log('成员参数', v)
       if (v.qq && v.groupQQ) {
         const params = `qq=${v.qq}&groupQQ=${v.groupQQ}`
         GetGroupMembers(params).then((res) => {
           var d = JSON.parse(res.data)
-          console.log('成员列表', d.data)
           if (d.code === 200) {
             var a = d.data.mems
-            console.log(a)
             const aa = []
             a.forEach((item) => {
               aa.push({
@@ -234,10 +230,8 @@ export default {
       }
     },
     insertMems(p) {
-      console.log('插入', p)
       if (p) {
         InsertGroupMembers(p).then((res) => {
-          console.log(res)
           if (res.statusCode === 200) {
             TipsBox('success', res.data)
             this.$emit('dialogFormVisibleEmit', false)

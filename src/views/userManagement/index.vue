@@ -10,6 +10,7 @@
       @operateEmit2="operateEmit2"
       @refresh="getPageList()"
       @searchFormEmit2="searchFormEmit2"
+      @sortChange="sortChange"
     >
       <template v-slot:userStatus="scope">
         <el-tag :type="scope.row.userStatus === 0 ? 'success' : 'danger'" style="cursor:pointer;" @click="changeStatus(scope.row)">
@@ -54,7 +55,6 @@
   </div>
 </template>
 <script>
-// import DataForm from '@/components/DataForm/index.vue'
 import DataForm from '@/views/userManagement/components/dataForm.vue'
 import PasswordForm from '@/views/userManagement/components/passwordForm.vue'
 import UpLimitForm from '@/views/userManagement/components/upLimitForm.vue'
@@ -206,6 +206,11 @@ export default {
     this.getPageList()
   },
   methods: {
+    sortChange(v) {
+      this.listQuery.pageIndex = 1
+      this.listQuery = Object.assign({}, this.listQuery, v)
+      this.getPageList()
+    },
     clickUpLimit(row) {
       this.dialogUpdateUpLimit = true
       this.upLimittemp.userId = row.id

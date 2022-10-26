@@ -22,6 +22,19 @@
                 />
               </el-select>
             </el-form-item>
+            <el-form-item v-if="field.type === 'date'" style="margin-right: 10px;">
+              <span>{{ field.label }}：</span>
+              <el-date-picker
+                v-model="temp[field.name]"
+                type="datetimerange"
+                :picker-options="pickerOptions"
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+                align="right"
+                value-format="yyyy-MM-dd HH:MM:ss"
+              />
+            </el-form-item>
           </div>
         </div>
       </template>
@@ -38,7 +51,63 @@ export default {
   },
   data() {
     return {
-      temp: {}
+      temp: {},
+      pickerOptions: {
+        shortcuts: [
+          {
+            text: '全部',
+            onClick(picker) {
+              const end = ''
+              const start = ''
+              picker.$emit('pick', [start, end])
+            }
+          },
+          {
+            text: '3天内',
+            onClick(picker) {
+              const end = new Date()
+              const start = new Date()
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 3)
+              picker.$emit('pick', [start, end])
+            }
+          },
+          {
+            text: '一周内',
+            onClick(picker) {
+              const end = new Date()
+              const start = new Date()
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
+              picker.$emit('pick', [start, end])
+            }
+          }, {
+            text: '三个月',
+            onClick(picker) {
+              const end = new Date()
+              const start = new Date()
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
+              picker.$emit('pick', [start, end])
+            }
+          },
+          {
+            text: '半年内',
+            onClick(picker) {
+              const end = new Date()
+              const start = new Date()
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 180)
+              picker.$emit('pick', [start, end])
+            }
+          },
+          {
+            text: '一年内',
+            onClick(picker) {
+              const end = new Date()
+              const start = new Date()
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 365)
+              picker.$emit('pick', [start, end])
+            }
+          }
+        ]
+      }
     }
   },
   watch: {

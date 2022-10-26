@@ -74,7 +74,6 @@ const actions = {
   logout({ commit, state }) {
     return new Promise((resolve, reject) => {
       const params = `userName=${Cookies.get('permission')}`
-      console.log('登出参数', params)
       logout(params).then(() => {
         removeToken() // must remove  token  first
         removeRefreshToken()

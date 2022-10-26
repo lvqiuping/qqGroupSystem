@@ -87,13 +87,22 @@ export default {
       listQuery: {
         pageIndex: 1,
         pageSize: 10,
-        userName: ''
+        userName: '',
+        beginTime: '',
+        endTime: ''
       },
       searchForm: {
         expend: true,
         title: '表格筛选',
         size: 'default',
         fields: [
+          {
+            show: true,
+            type: 'date',
+            label: '时间',
+            labelShow: false,
+            name: 'userStatisticsTime'
+          },
           {
             show: true,
             type: 'input',
@@ -110,6 +119,10 @@ export default {
   },
   methods: {
     searchFormEmit2(v) {
+      if (v.userStatisticsTime) {
+        this.listQuery.beginTime = v.userStatisticsTime[0]
+        this.listQuery.endTime = v.userStatisticsTime[1]
+      }
       this.listQuery.pageIndex = 1
       this.listQuery = Object.assign({}, this.listQuery, v)
       this.getPageList()

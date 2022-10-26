@@ -38,8 +38,8 @@
       style="width: 100%"
       border
       @selection-change="handleSelectionChange"
-      @sort-change="sortChange"
     >
+      <!-- @sort-change="sortChange" -->
       <el-table-column v-if="multipleTable === true" type="selection" width="55" />
       <el-table-column
         v-for="(item, index) in tableTitle.filter(item2 => item2.show)"
@@ -129,14 +129,14 @@ export default {
       row.index = rowIndex
       row.xh = rowIndex + 1
     },
-    sortChange({ column, prop, order }) {
-      if (order === 'ascending') {
-        this.temp.orderBy = prop
-      } else if (order === 'descending') {
-        this.temp.orderBy = prop + ' desc'
-      }
-      this.$emit('sortChange', this.temp)
-    },
+    // sortChange({ column, prop, order }) {
+    //   if (order === 'ascending') {
+    //     this.temp.orderBy = prop
+    //   } else if (order === 'descending') {
+    //     this.temp.orderBy = prop + ' desc'
+    //   }
+    //   this.$emit('sortChange', this.temp)
+    // },
     searchFormEmit(v) {
       this.b_data = v
       this.$emit('searchFormEmit2', this.b_data)

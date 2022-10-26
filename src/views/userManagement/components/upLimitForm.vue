@@ -30,7 +30,6 @@ export default {
   methods: {
     createData() {
       const temp2 = `userId=${this.upLimittemp.userId}&newUpLimit=${this.upLimittemp.newUpLimit}`
-      console.log(temp2)
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           this.$emit('createUpLimit', temp2)
