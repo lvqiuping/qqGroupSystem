@@ -148,12 +148,13 @@ export default {
             name: 'createUserName'
           },
           {
-            show: false,
+            show: true,
             type: 'select',
             label: '状态',
             labelShow: false,
-            name: 'memberUpdateStatus',
+            name: 'status',
             options: [
+              { label: '全部', value: '' },
               { label: '已完成', value: true },
               { label: '进行中', value: false }
             ]
@@ -167,7 +168,7 @@ export default {
         pageSize: 10,
         groupQQ: '',
         groupName: '',
-        memberUpdateStatus: ''
+        status: ''
       },
 
       buttonGroup: {
