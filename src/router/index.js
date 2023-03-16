@@ -82,6 +82,26 @@ export const constantRoutes = [
       }
     ]
   },
+  {
+    path: '/groupSearch',
+    component: Layout,
+    redirect: '/groupSearch/index',
+    name: 'GroupSearch', // 设定路由的名字，一定要填写不然使用<keep-alive>时会出现各种问题
+    meta: {
+      title: '群成员搜索', // 设置该路由在侧边栏和面包屑中展示的名字
+      icon: 'el-icon-s-custom'
+    },
+    hidden: false,
+    children: [
+      {
+        path: 'index',
+        name: 'GroupSearchList',
+        component: () => import('@/views/groupSearch/index'),
+        meta: { title: '群成员搜索', icon: 'el-icon-search' },
+        hidden: false
+      }
+    ]
+  },
   // 404 page must be placed at the end !!! 这里本来到404页面，现在到首页
   { path: '*', redirect: '/', hidden: true }
 ]
