@@ -29,118 +29,120 @@
       </el-col>
     </el-row>
     <pagination v-show="total > 0" :total="total" :page.sync="listQuery.pageIndex" :limit.sync="listQuery.pageSize" @pagination="getPageList()" />
-      <div>
-    <el-button type="primary" @click="printPdf">打 印</el-button>
-    <div id="stReport" style="display: none;">
-      <table
-        id="stTable"
-        border="0"
-        align="center"
-        cellpadding="0"
-        cellspacing="0"
-        style="border:solid 0px black;width: 95%; height: 100%;"
-      >
-        <tbody style="height: 82%;">
-          <tr
-            v-for="(item, index) in tableData2"
-            :key="index"
-            style="height: 60px;"
-          >
-            <td
-              width="31%"
-              style="word-break:break-all; word-wrap:break-word; font-size: 18px; color: blue;"
+    <!-- <div>
+      <el-button type="primary" @click="printPdf">打 印</el-button>
+      <div id="stReport" style="display: none;">
+        <table
+          id="stTable"
+          border="0"
+          align="center"
+          cellpadding="0"
+          cellspacing="0"
+          style="border:solid 0px black;width: 95%; height: 100%;"
+        >
+          <tbody style="height: 82%;">
+            <tr
+              v-for="(item, index) in tableData2"
+              :key="index"
+              style="height: 60px;"
             >
-              {{
-                item.label === '123'
-                  ? ''
-                  : '摘要摘要摘要摘要摘要摘要摘要摘要摘要摘要摘要摘要摘要摘要摘要'
-              }}
-            </td>
-            <td
-              width="31%"
-              style="word-break:break-all; word-wrap:break-word; font-size: 18px; color: blue;padding-left: 15px;"
-            >
-              {{
-                item.label === '123'
-                  ? ''
-                  : '会计科目会计科目会计科目会计科目会计科目会计科目会计科目会计科目'
-              }}
-            </td>
-            <td
-              width="6%"
-              align="right"
-              style="word-wrap: nowarp; font-size: 18px;"
-              :style="{ color: item.label === '123' ? 'white' : 'blue' }"
-            >
-              {{ item.label === '123' ? 0 : 10056700.98 }}
-            </td>
-            <td
-              width="6%"
-              align="right"
-              style="word-wrap: nowarp; font-size: 18px;"
-              :style="{ color: item.label === '123' ? 'white' : 'blue' }"
-            >
-              {{ item.label === '123' ? 0 : 1000.23 }}
-            </td>
-          </tr>
-        </tbody>
-        <!-- absolute fixed -->
-        <tfoot style="height: 8%; bottom: 0px;">
-          <tr>
-            <td
-              width="15%"
-              tdata="Sum"
-              tindex="3"
-              format="#,##0.00"
-              align="right"
-            >
-              <font color="white" id="sum1">￥###</font>
-            </td>
-            <td
-              width="15%"
-              tdata="Sum"
-              tindex="4"
-              format="#,##0.00"
-              align="right"
-            >
-              <font color="white" id="sum2">￥###</font>
-            </td>
-          </tr>
-          <tr>
-            <td
-              width="60%"
-              align="left"
-              colspan="2"
-              style="padding-left: 80px;"
-            >
-              <font color="blue" tdata="(sum1 + sum2)" format="UpperMoney"
-                >#####<br />
-              </font>
-            </td>
-            <td
-              width="16.7%"
-              tdata="Sum"
-              tindex="3"
-              format="#,##0.00"
-              align="right"
-              style="padding-left: 10px;"
-            >
-              <font color="blue" id="sum3">￥###</font>
-            </td>
-            <td
-              width="16.7%"
-              tdata="Sum"
-              tindex="4"
-              format="#,##0.00"
-              align="right"
-            >
-              <font color="blue" id="sum4">￥###</font>
-            </td>
-          </tr>
-        </tfoot>
-      </table>
-    </div>
-  </div>
+              <td
+                width="31%"
+                style="word-break:break-all; word-wrap:break-word; font-size: 18px; color: blue;"
+              >
+                {{
+                  item.label === '123'
+                    ? ''
+                    : '摘要摘要摘要摘要摘要摘要摘要摘要摘要摘要摘要摘要摘要摘要摘要'
+                }}
+              </td>
+              <td
+                width="31%"
+                style="word-break:break-all; word-wrap:break-word; font-size: 18px; color: blue;padding-left: 15px;"
+              >
+                {{
+                  item.label === '123'
+                    ? ''
+                    : '会计科目会计科目会计科目会计科目会计科目会计科目会计科目会计科目'
+                }}
+              </td>
+              <td
+                width="6%"
+                align="right"
+                style="word-wrap: nowarp; font-size: 18px;"
+                :style="{ color: item.label === '123' ? 'white' : 'blue' }"
+              >
+                {{ item.label === '123' ? 0 : 10056700.98 }}
+              </td>
+              <td
+                width="6%"
+                align="right"
+                style="word-wrap: nowarp; font-size: 18px;"
+                :style="{ color: item.label === '123' ? 'white' : 'blue' }"
+              >
+                {{ item.label === '123' ? 0 : 1000.23 }}
+              </td>
+            </tr>
+          </tbody>
+          <tfoot style="height: 8%; bottom: 0px;">
+            <tr>
+              <td
+                width="15%"
+                tdata="Sum"
+                tindex="3"
+                format="#,##0.00"
+                align="right"
+              >
+                <font id="sum1" color="white">￥###</font>
+              </td>
+              <td
+                width="15%"
+                tdata="Sum"
+                tindex="4"
+                format="#,##0.00"
+                align="right"
+              >
+                <font id="sum2" color="white">￥###</font>
+              </td>
+            </tr>
+            <tr>
+              <td
+                width="60%"
+                align="left"
+                colspan="2"
+                style="padding-left: 80px;"
+              >
+                <font
+                  color="blue"
+                  tdata="(sum1 + sum2)"
+                  format="UpperMoney"
+                >#####<br>
+                </font>
+              </td>
+              <td
+                width="16.7%"
+                tdata="Sum"
+                tindex="3"
+                format="#,##0.00"
+                align="right"
+                style="padding-left: 10px;"
+              >
+                <font id="sum3" color="blue">￥###</font>
+              </td>
+              <td
+                width="16.7%"
+                tdata="Sum"
+                tindex="4"
+                format="#,##0.00"
+                align="right"
+              >
+                <font id="sum4" color="blue">￥###</font>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div> -->
   </div>
 </template>
 <script>
@@ -183,7 +185,8 @@ export default {
             name: 'groupQQ'
           }
         ],
-        tableData2: []
+        tableData2: [],
+        printerList: []
       }
     }
   },
@@ -193,29 +196,40 @@ export default {
   },
   methods: {
     initData() {
-      this.tableData2 = []
-      for (let index = 0; index < 50; index++) {
-        this.tableData2.push({ label: index, value: index })
+      this.LODOP = getLodop() // 创建一个LODOP对象
+      console.log(this.LODOP)
+      const counter = this.LODOP.GET_PRINTER_COUNT() // 获取打印机个数
+      console.log('counter', counter)
+      for (let i = 0; i < counter; i++) {
+        this.printerList.push({ // 将打印机存入printerList数组中
+          name: this.LODOP.GET_PRINTER_NAME(i),
+          value: i
+        })
       }
-      const printNum = 9 // 表格一页打印9条
-      const printPage = Math.ceil(this.tableData2.length / printNum) // 有多少页
-      const expectNum = printNum * printPage //  期望占满页数 printPage 需要的数据条数
-      const tabledataNum = this.tableData2.length // 当前已有的数据
-      // 不够使用空白的来顶替，保证合计数一直在底部显示
-      for (let index = 0; index < expectNum - tabledataNum; index++) {
-        this.tableData2.push({ label: '', value: 0 })
-      }
+      console.log('this.printerList', this.printerList)
+      // this.tableData2 = []
+      // for (let index = 0; index < 50; index++) {
+      //   this.tableData2.push({ label: index, value: index })
+      // }
+      // const printNum = 9 // 表格一页打印9条
+      // const printPage = Math.ceil(this.tableData2.length / printNum) // 有多少页
+      // const expectNum = printNum * printPage //  期望占满页数 printPage 需要的数据条数
+      // const tabledataNum = this.tableData2.length // 当前已有的数据
+      // // 不够使用空白的来顶替，保证合计数一直在底部显示
+      // for (let index = 0; index < expectNum - tabledataNum; index++) {
+      //   this.tableData2.push({ label: '', value: 0 })
+      // }
     },
     printPdf() {
-      let LODOP = getLodop()
+      const LODOP = getLodop()
       LODOP.SET_PRINT_STYLE('FontSize', 12)
       LODOP.SET_PRINT_PAGESIZE(2, '297mm', '210mm', 'A4') // 纸张方向大小
-      LODOP.SET_PRINT_STYLEA(0, 'TableHeightScope', 3) //高度包含页尾
-      LODOP.ADD_PRINT_SETUP_BKIMG(`"<img border='0' src=${this.imgsrc}>"`) //背景图
+      LODOP.SET_PRINT_STYLEA(0, 'TableHeightScope', 3) // 高度包含页尾
+      LODOP.ADD_PRINT_SETUP_BKIMG(`"<img border='0' src=${this.imgsrc}>"`) // 背景图
       LODOP.SET_SHOW_MODE('BKIMG_LEFT', '0mm')
       LODOP.SET_SHOW_MODE('BKIMG_TOP', '0mm')
       LODOP.SET_SHOW_MODE('BKIMG_WIDTH', '197mm')
-      LODOP.SET_SHOW_MODE('BKIMG_HEIGHT', '210mm') //这句可不加，因宽高比例固定按原图的
+      LODOP.SET_SHOW_MODE('BKIMG_HEIGHT', '210mm') // 这句可不加，因宽高比例固定按原图的
       LODOP.SET_SHOW_MODE('BKIMG_IN_PREVIEW', 1)
       // LODOP.SET_SHOW_MODE('BKIMG_IN_PREVIEW', 1) //预览包含背景图
       // LODOP.SET_PRINT_PAGESIZE(2, 2970, 2100, 'a4') // 纸张方向大小
@@ -224,7 +238,7 @@ export default {
       // LODOP.PRINTSETUP_PAGE_COUNT(2) // 2页
       // LODOP.SET_PRINT_PAGE_COUNT(2) // 2页
       LODOP.SET_PREVIEW_WINDOW(0, 0, 0, 0, 0, '') // 演示设置各种样式的打印预览窗口：
-      LODOP.SET_SHOW_MODE('LANDSCAPE_DEFROTATED', 1) //横向时的正向显示
+      LODOP.SET_SHOW_MODE('LANDSCAPE_DEFROTATED', 1) // 横向时的正向显示
       // LODOP.SET_PRINT_STYLE('Bold', 1)
       LODOP.SET_PRINT_STYLE('FontColor', '#0000FF')
       LODOP.ADD_PRINT_TEXT('20mm', '115mm', '40mm', '5mm', '记账凭证')
@@ -298,12 +312,11 @@ export default {
       LODOP.SET_PRINT_STYLEA(0, 'ItemType', 1)
       LODOP.ADD_PRINT_TEXT('191mm', '260mm', '30mm', '5mm', '经办人xx')
       LODOP.SET_PRINT_STYLEA(0, 'ItemType', 1)
- 
+
       // LODOP.PRINT() // 直接打印
       // LODOP.PRINT_SETUP() // 手动维护
       LODOP.PREVIEW()
-    
-  },
+    },
 
     searchFormEmit(v) {
       this.listQuery.pageIndex = 1
