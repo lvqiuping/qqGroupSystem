@@ -2,26 +2,25 @@
   <div class="app-container">
     <div style="display: flex;flex-direction: row;justify-content: space-between; ">
       <div style="display: flex;flex-direction: row;justify-content: space-between;">
-        <search-form
-          :search-form="searchForm"
-          @searchFormEmit="searchFormEmit"
-        />
+        <search-form :search-form="searchForm" @searchFormEmit="searchFormEmit" />
       </div>
       <div style="display: flex;flex-direction: row;justify-content: space-between; height: 40px; margin-bottom: 20px;">
         <el-button type="" icon="el-icon-refresh" style="margin-right: 10px; margin-left: 10px;" @click="getPageList()" />
       </div>
     </div>
-    <el-row :gutter="20" style="display: flex;align-items: center;">
+    <el-row :gutter="20" style="display: flex;">
       <el-col v-for="(item, index) in tableData" :key="index" :span="5">
-        <el-badge :value="isDraw?'提':''" type="primary">
-          <el-card :body-style="{ padding: '0px' }" shadow="hover">
+        <el-badge :value="'提'" class="item" style="display: block; height: 100%">
+          <el-card class="box-card" style="height: 100%;">
             <el-row>
-              <el-col :span="8"> <img :src="cardImage" class="image" style="width: 100%;height: auto;padding: 10px;"></el-col>
-              <el-col :span="14">
+              <el-col :xs="24" :sm="24" :md="24" :lg="5" :xl="5">
+                <div><el-avatar shape="square" size="large" :src="cardImage" /></div>
+              </el-col>
+              <el-col :xs="24" :sm="24" :md="24" :lg="19" :xl="19">
                 <div class="card-content">
-                  <div class="card-contents"><span style="color: #303133;">名称：</span>{{ item.groupName }}</div>
-                  <div class="card-contents"><span style="color: #303133;">人数：</span>{{ item.groupOwnerQq }}</div>
-                  <div class="card-contents"><span style="color: #303133;">QQ群号：</span>{{ item.groupQq }}</div>
+                  <div class="card-contents" style="color: #303133;font-size: 16px;">{{ item.groupName }}</div>
+                  <div class="card-contents"><span>人数：</span>{{ item.groupOwnerQq }}</div>
+                  <div class="card-contents"><span>QQ群号：</span>{{ item.groupQq }}</div>
                 </div>
               </el-col>
             </el-row>
@@ -29,7 +28,7 @@
         </el-badge>
       </el-col>
     </el-row>
-    <pagination v-show="total>0" :total="total" :page.sync="listQuery.pageIndex" :limit.sync="listQuery.pageSize" @pagination="getPageList()" />
+    <pagination v-show="total > 0" :total="total" :page.sync="listQuery.pageIndex" :limit.sync="listQuery.pageSize" @pagination="getPageList()" />
   </div>
 </template>
 <script>
@@ -97,20 +96,16 @@ export default {
 }
 </script>
 <style scoped>
-.card-box{
+.card-box {
   display: flex;
 }
-.card-content{
-  padding: 10px;
-  font-size: 15px;
+
+.card-content {
+  font-size: 14px;
 }
-.card-contents{
-  margin-bottom: 4px;
+
+.card-contents {
+  margin-bottom: 6px;
   color: #999;
-   /* white-space: nowrap; */
-  display: inline-block;
-  width: 100%;
-  /* overflow: hidden;
-  text-overflow:ellipsis; */
 }
 </style>
