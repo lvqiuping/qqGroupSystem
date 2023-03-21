@@ -22,6 +22,11 @@
           {{ scope.row.drawGroupUpLimit }}
         </el-tag>
       </template>
+      <template v-slot:isExportUnCodedPhone="scope">
+        <el-tag :type="scope.row.isExportUnCodedPhone === 0 ? 'danger' : 'success'" style="cursor:pointer;" @click="clickIsExportUnCodedPhone(scope.row)">
+          {{ scope.row.isExportUnCodedPhone === 0 ? '否' : '是' }}
+        </el-tag>
+      </template>
     </basic-table>
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.pageIndex" :limit.sync="listQuery.pageSize" @pagination="getPageList()" />
     <el-dialog :title="'新增'" :visible.sync="dialogFormVisible" top="3%">
@@ -60,10 +65,11 @@ import PasswordForm from '@/views/userManagement/components/passwordForm.vue'
 import UpLimitForm from '@/views/userManagement/components/upLimitForm.vue'
 import Pagination from '@/components/BasicTable/Pagination.vue'
 import BasicTable from '@/components/BasicTable/index.vue'
-import { AddUser, GetUserPageList, ChangeUserStauts, UpdatePassword, UpdateDrawGroupUpLimit } from '@/api/userManagement'
+import { AddUser, GetUserPageList, ChangeUserStauts, UpdatePassword, UpdateDrawGroupUpLimit, UpdateExportUnCodedPhon } from '@/api/userManagement'
 import { TipsBox } from '@/utils/feedback.js'
 import { getList } from '@/utils'
 import { QueryBox } from '@/utils/feedback'
+// import Cookies from 'js-cookie'
 export default {
   name: 'UserManagement',
   components: { BasicTable, Pagination, DataForm, PasswordForm, UpLimitForm },
@@ -108,6 +114,13 @@ export default {
           slot: 'drawGroupUpLimit'
         },
         {
+          label: '明码导出',
+          value: 'isExportUnCodedPhone',
+          show: true,
+          type: 'slot',
+          slot: 'isExportUnCodedPhone'
+        },
+        {
           label: '创建时间',
           value: 'createOn',
           show: true,
@@ -128,16 +141,6 @@ export default {
                 this.passwordtemp.userId = row.id
               }
             }
-            // {
-            //   text: '上限',
-            //   icon: 'el-icon-edit',
-            //   type: 'success',
-            //   clickEvent: (row) => {
-            //     // this.resetPasswordtemp()
-            //     this.dialogUpdateUpLimit = true
-            //     this.upLimittemp.userId = row.id
-            //   }
-            // }
           ]
         }
       ],
@@ -232,6 +235,24 @@ export default {
         }
         const params = `userId=${v.id}&status=${v.userStatus}`
         ChangeUserStauts(params).then((res) => {
+          this.loading = true
+          if (res.statusCode === 200) {
+            this.loading = false
+            TipsBox('success', res.data)
+            this.getPageList()
+          }
+        })
+      })
+    },
+    clickIsExportUnCodedPhone(v) {
+      QueryBox('是否修改导出状态').then(() => {
+        if (v.isExportUnCodedPhone === 1) {
+          v.isExportUnCodedPhone = 0
+        } else if (v.isExportUnCodedPhone === 0) {
+          v.isExportUnCodedPhone = 1
+        }
+        const params = `userId=${v.id}&status=${v.isExportUnCodedPhone}`
+        UpdateExportUnCodedPhon(params).then((res) => {
           this.loading = true
           if (res.statusCode === 200) {
             this.loading = false

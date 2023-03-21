@@ -1,10 +1,3 @@
-// import request from '@/utils/request'
-
-// const REQUEST_API = {
-//   GetPageList: '/api/Video/GetPageList', // 请求数据列表
-//   DeleteVideos: '/api/Video/DeleteVideos'
-// }
-
 /**
  * Parse the time to string
  * @param {(Object|string|number)} time
@@ -118,15 +111,11 @@ export function param2Obj(url) {
   })
   return obj
 }
+export function formatJson(filterVal, jsonData) {
+  return jsonData.map(v => filterVal.map(j => v[j]))
+}
 
-/**
- * @param {string} url
- * @returns {Object}
- * {
- *  type: VEDIO
- *  fun: GetPageList
- * }
- */
+// 获取列表
 export function getList(obj, api, params) {
   api(params).then(response => {
     if (response.statusCode === 200) {
@@ -136,7 +125,7 @@ export function getList(obj, api, params) {
     }
   })
 }
-
+// 导出
 export function export2Excel(tData, tTitle, tName) {
   require.ensure([], () => {
     const { export_json_to_excel } = require('@/excel/export2Excel') // 这里必须使用绝对路径，使用@/+存放export2Excel的路径
@@ -151,7 +140,19 @@ export function export2Excel(tData, tTitle, tName) {
     export_json_to_excel(tHeader, data, tName)// 导出的表格名称
   })
 }
-
-export function formatJson(filterVal, jsonData) {
-  return jsonData.map(v => filterVal.map(j => v[j]))
+// 导出数据存为csv格式
+export function exportCsv(data, file_name) {
+  var blob = new Blob([data])
+  if (window.navigator.msSaveOrOpenBlob) {
+    window.navigator.msSaveBlob(blob, file_name)
+  } else {
+    var a = window.document.createElement('a')
+    a.href = window.URL.createObjectURL(blob, {
+      type: 'text/csv;charset=utf-8'
+    })
+    a.download = file_name
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+  }
 }

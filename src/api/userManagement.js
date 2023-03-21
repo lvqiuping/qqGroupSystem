@@ -39,4 +39,10 @@ export function UpdateDrawGroupUpLimit(data) {
     data
   })
 }
+export function UpdateExportUnCodedPhon(data) {
+  return request({
+    url: '/api/User/UpdateExportUnCodedPhone?' + data,
+    method: 'post'
+  })
+}
 

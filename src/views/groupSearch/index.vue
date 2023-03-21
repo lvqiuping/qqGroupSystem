@@ -29,7 +29,7 @@
       </el-col>
     </el-row>
     <pagination v-show="total > 0" :total="total" :page.sync="listQuery.pageIndex" :limit.sync="listQuery.pageSize" @pagination="getPageList()" />
-    <!-- <div>
+    <div>
       <el-button type="primary" @click="printPdf">打 印</el-button>
       <div id="stReport" style="display: none;">
         <table
@@ -142,7 +142,7 @@
           </tfoot>
         </table>
       </div>
-    </div> -->
+    </div>
   </div>
 </template>
 <script>
@@ -196,29 +196,18 @@ export default {
   },
   methods: {
     initData() {
-      this.LODOP = getLodop() // 创建一个LODOP对象
-      console.log(this.LODOP)
-      const counter = this.LODOP.GET_PRINTER_COUNT() // 获取打印机个数
-      console.log('counter', counter)
-      for (let i = 0; i < counter; i++) {
-        this.printerList.push({ // 将打印机存入printerList数组中
-          name: this.LODOP.GET_PRINTER_NAME(i),
-          value: i
-        })
+      this.tableData2 = []
+      for (let index = 0; index < 50; index++) {
+        this.tableData2.push({ label: index, value: index })
       }
-      console.log('this.printerList', this.printerList)
-      // this.tableData2 = []
-      // for (let index = 0; index < 50; index++) {
-      //   this.tableData2.push({ label: index, value: index })
-      // }
-      // const printNum = 9 // 表格一页打印9条
-      // const printPage = Math.ceil(this.tableData2.length / printNum) // 有多少页
-      // const expectNum = printNum * printPage //  期望占满页数 printPage 需要的数据条数
-      // const tabledataNum = this.tableData2.length // 当前已有的数据
-      // // 不够使用空白的来顶替，保证合计数一直在底部显示
-      // for (let index = 0; index < expectNum - tabledataNum; index++) {
-      //   this.tableData2.push({ label: '', value: 0 })
-      // }
+      const printNum = 9 // 表格一页打印9条
+      const printPage = Math.ceil(this.tableData2.length / printNum) // 有多少页
+      const expectNum = printNum * printPage //  期望占满页数 printPage 需要的数据条数
+      const tabledataNum = this.tableData2.length // 当前已有的数据
+      // 不够使用空白的来顶替，保证合计数一直在底部显示
+      for (let index = 0; index < expectNum - tabledataNum; index++) {
+        this.tableData2.push({ label: '', value: 0 })
+      }
     },
     printPdf() {
       const LODOP = getLodop()

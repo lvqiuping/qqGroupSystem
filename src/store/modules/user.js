@@ -11,7 +11,8 @@ const getDefaultState = () => {
     userName: Cookies.get('permission'),
     permission: '',
     isAdmin: Cookies.get('isAdmin'),
-    userId: Cookies.get('userId')
+    userId: Cookies.get('userId'),
+    isExportUnCodedPhone: Cookies.get('isExportUnCodedPhone')
   }
 }
 
@@ -35,6 +36,9 @@ const mutations = {
   SET_IS_ADMIN: (state, isAdmin) => {
     state.isAdmin = isAdmin
   },
+  SET_IS_EXPORTUNCODEDPHONE: (state, isExportUnCodedPhone) => {
+    state.isExportUnCodedPhone = isExportUnCodedPhone
+  },
   SET_USER_ID: (state, userId) => {
     state.userId = userId
   }
@@ -52,8 +56,11 @@ const actions = {
         Cookies.set('permission', obj.userName)
         Cookies.set('userId', response.data.userId)
         Cookies.set('isAdmin', response.data.isAdmin)
+        Cookies.set('isExportUnCodedPhone', response.data.user.isExportUnCodedPhone)
         commit('SET_USER_NAME', obj.userName)
         commit('SET_IS_ADMIN', response.data.isAdmin)
+        commit('SET_IS_EXPORTUNCODEDPHONE', response.data.user.isExportUnCodedPhone)
+
         commit('SET_USER_ID', response.data.userId)
         // token 如果token失效会返回新的refreshToken
         var token = response.data.token
@@ -80,6 +87,8 @@ const actions = {
         Cookies.remove('permission')
         Cookies.remove('userId')
         Cookies.remove('isAdmin')
+        Cookies.remove('isExportUnCodedPhone')
+
         window.location.reload() // f5
         resetRouter()
         // resolve() //

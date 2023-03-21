@@ -5,7 +5,7 @@
       :table-data="tableData"
       :loading="loading"
       :search-form="searchForm"
-      :button-group="buttonGroup"
+      :button-group="isAdmin === 'true' || isExportUnCodedPhone === '1' ? buttonGroup : buttonGroup2"
       :multiple-table="false"
       @operateEmit2="operateEmit2"
       @refresh="getPageList()"
@@ -22,9 +22,10 @@
 import Pagination from '@/components/BasicTable/Pagination.vue'
 import BasicTable from '@/components/BasicTable/index.vue'
 import { GetGroupMemberPageList, ExportAllGroupMembers, DeleteMembers } from '@/api/retrievalNumber'
-import { getList, export2Excel } from '@/utils'
+import { getList, export2Excel, exportCsv } from '@/utils'
 import { QueryBox, TipsBox } from '@/utils/feedback'
 import ExportForm from './exportForm.vue'
+import Cookies from 'js-cookie'
 export default {
   name: 'PeopleNumber',
   components: { BasicTable, Pagination, ExportForm },
@@ -60,10 +61,26 @@ export default {
             text: '批量删除',
             icon: 'el-icon-delete',
             type: 'danger',
-            operateType: 'del'
+            operateType: 'del',
+            showButtonGroup: false
           }
         ]
 
+      },
+      buttonGroup2: {
+        show: true,
+        expend: true,
+        title: '表格筛选',
+        size: 'default',
+        fields: [
+          {
+            text: '导出全部',
+            icon: 'el-icon-upload2',
+            type: 'success',
+            operateType: 'export',
+            showButtonGroup: true
+          }
+        ]
       },
       searchForm: {
         expend: true,
@@ -156,19 +173,17 @@ export default {
         qq: '',
         phone: ''
       },
-      selectDate: []
+      selectDate: [],
+      isExportUnCodedPhone: '0',
+      isAdmin: 'false'
     }
   },
   created() {
     this.listQuery.onlyHasPhone = this.$route.query.onlyHasPhone
     this.listQuery.groupQQ = this.$route.query.groupQQ
-    // if (this.$route.query) {
-    //   this.temp = {
-    //     createUserName: this.$route.query.createUserName
-    //   }
-    //   this.searchFormEmit2(this.temp)
-    // }
     this.getPageList()
+    this.isAdmin = Cookies.get('isAdmin')
+    this.isExportUnCodedPhone = Cookies.get('isExportUnCodedPhone')
   },
   methods: {
     dialogFormExportEmit(v) {
@@ -199,6 +214,9 @@ export default {
         } else {
           this.downloadExcel(v)
         }
+      }
+      if (v === 'export') {
+        this.downloadExcel(9)
       }
       if (v === 'del') {
         const params = this.selectDate
@@ -234,15 +252,22 @@ export default {
       this.downloadExcel()
     },
     downloadExcel(v) {
-      QueryBox('将导出为excel文件，确认导出?').then(() => {
+      QueryBox('确认导出文件?').then(() => {
         if (v === 0) {
+          // 当前页是数据库前面的1001条数据，所有页是数据库的所有
           this.excelData = this.tableData
           export2Excel(this.excelData, this.tableTitle, '导出群成员')
         } else {
           const params = `groupQQ=${this.listQuery.groupQQ}&onlyHasPhone=${this.listQuery.onlyHasPhone}&qq=${this.listQuery.qq}&phone=${this.listQuery.phone}`
           ExportAllGroupMembers(params).then((res) => {
-            this.excelData = res.data
-            export2Excel(this.excelData, this.tableTitle, '导出群成员')
+            if (v === 9) {
+              // 加密文件存为csv文件
+              this.excelData = res.data
+              exportCsv(this.excelData, '导出群成员.csv')
+            } else {
+              this.excelData = res.data
+              export2Excel(this.excelData, this.tableTitle, '导出群成员')
+            }
           })
         }
       }).catch(() => {

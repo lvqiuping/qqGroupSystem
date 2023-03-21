@@ -91,14 +91,14 @@ export const constantRoutes = [
       title: '群成员搜索', // 设置该路由在侧边栏和面包屑中展示的名字
       icon: 'el-icon-s-custom'
     },
-    hidden: false,
+    hidden: true,
     children: [
       {
         path: 'index',
         name: 'GroupSearchList',
         component: () => import('@/views/groupSearch/index'),
         meta: { title: '群成员搜索', icon: 'el-icon-search' },
-        hidden: false
+        hidden: true
       }
     ]
   },
