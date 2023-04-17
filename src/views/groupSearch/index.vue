@@ -42,7 +42,7 @@
         >
           <tbody style="height: 82%;">
             <tr
-              v-for="(item, index) in tableData2"
+              v-for="(item, index) in tableData"
               :key="index"
               style="height: 60px;"
             >
@@ -53,10 +53,10 @@
                 {{
                   item.label === '123'
                     ? ''
-                    : '摘要摘要摘要摘要摘要摘要摘要摘要摘要摘要摘要摘要摘要摘要摘要'
+                    : item.groupName
                 }}
               </td>
-              <td
+              <!-- <td
                 width="31%"
                 style="word-break:break-all; word-wrap:break-word; font-size: 18px; color: blue;padding-left: 15px;"
               >
@@ -81,7 +81,7 @@
                 :style="{ color: item.label === '123' ? 'white' : 'blue' }"
               >
                 {{ item.label === '123' ? 0 : 1000.23 }}
-              </td>
+              </td> -->
             </tr>
           </tbody>
           <tfoot style="height: 8%; bottom: 0px;">
